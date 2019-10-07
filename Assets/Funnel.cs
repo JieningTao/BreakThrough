@@ -14,124 +14,92 @@ public class Funnel : MonoBehaviour
     private float MovementSpeed;
 
     [SerializeField]
-    private float MaxSafetyDistanceToTarget;
+    public FunnelManager ManagedBy;
 
-    [SerializeField]
-    private float MinSafetyDistanceToTarget;
-
-    [SerializeField]
     public FunnelState CurrentState;
-    [SerializeField]
     public Vector3 WhereToBeAt;
-
-
-
-
     private float CurrentStateTimeLeft;
+
+    public Vector3 RestPosition;
+    public Quaternion RestRotation;
+    public Transform RestParent;
+
 
     public enum FunnelState
     {
-
-        MovingToTarget,
-        FindingSuitableLocation,
-        ManuveringAroundTarget,
-        InPositionAroundTarget,
+        Recalling,
+        Resting,
+        Operational,
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        RestPosition = transform.position;
+        RestRotation = transform.rotation;
+        RestParent = this.GetComponentInParent<Transform>();
 
+        ManagedBy.Funnels.Add(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //transform.rotation = Vector3.RotateTowards(transform.position, TargetTransform.position, 10, 10);
+        switch (CurrentState)
+        {
+            case (FunnelState.Operational):
+                TurnToTarget(TargetTransform.position);
+                MoveToWTBA();
+                break;
+            case (FunnelState.Recalling):
+                TurnToTarget(WhereToBeAt);
+                MoveToWTBA();
+                CheckDock();
+                break;
+            case (FunnelState.Resting):
+                break;
+        }
+            
+        
 
-        Vector3 targetDir = TargetTransform.position - transform.position;
+    }
 
-        float step = TargetingSpeed * Time.deltaTime;
 
-        Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0f);
+    void MoveToWTBA()
+    {
+        Vector3 newPosition = Vector3.MoveTowards(transform.position, WhereToBeAt, MovementSpeed * Time.deltaTime);
+        this.transform.position = newPosition;
+    }
+
+    void TurnToTarget(Vector3 Target)
+    {
+
+        Vector3 newDir = Vector3.RotateTowards(transform.forward, Target - transform.position, TargetingSpeed * Time.deltaTime, 0.0f);
         Debug.DrawRay(transform.position, newDir, Color.red);
 
         // Move our position a step closer to the target.
         transform.rotation = Quaternion.LookRotation(newDir);
-
-
-        Vector3 newPosition = Vector3.MoveTowards(transform.position, WhereToBeAt, MovementSpeed*Time.deltaTime);
-        this.transform.position = newPosition;
-
-        /*
-        switch (CurrentState)
-        {
-            case FunnelState.MovingToTarget: UpdateMovingToTarget(); break;
-            case FunnelState.FindingSuitableLocation: UpdateFindingSuitableLocation(); break;
-            case FunnelState.ManuveringAroundTarget: UpdateManuveringAroundTarget(); break;
-            case FunnelState.InPositionAroundTarget: UpdateInPositionAroundTarget(); break;
-        }
-        */
-
-
     }
 
-
-
-
-
-
-
-
-    /*
-
-    private void UpdateMovingToTarget()
+    public void Recall()
     {
-        if (Vector3.Distance(TargetTransform.position, transform.position) <= MaxSafetyDistanceToTarget)
-        {
-            CurrentState = FunnelState.FindingSuitableLocation;
-        }
-        else
-        {
-            Vector3 newPosition = Vector3.MoveTowards(transform.position, TargetTransform.position, MovementSpeed);
-            this.transform.position = newPosition;
-        }
+        WhereToBeAt = RestPosition;
+        CurrentState = FunnelState.Recalling;
     }
 
-    private void UpdateManuveringAroundTarget()
+    public void CheckDock()
     {
-        if (Vector3.Distance(TargetTransform.position, transform.position) > MaxSafetyDistanceToTarget)
+        if (Vector3.Distance(RestPosition, transform.position) < 0.1f)
         {
-            CurrentState = FunnelState.MovingToTarget;
+            transform.position = RestPosition;
+            transform.rotation = RestRotation;
+            transform.parent = RestParent;
+            CurrentState = FunnelState.Resting;
         }
-        else
-        {
-            Vector3 newPosition = Vector3.MoveTowards(WhereToBeAt, TargetTransform.position, MovementSpeed);
-            this.transform.position = newPosition;
-        }
+        
     }
 
-    private void UpdateFindingSuitableLocation()
-    {
-        WhereToBeAt = new Vector3(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f)) * Random.Range(MinSafetyDistanceToTarget, MaxSafetyDistanceToTarget)+TargetTransform.position;
-        CurrentState = FunnelState.ManuveringAroundTarget;
-        CurrentStateTimeLeft -= Time.deltaTime;
-        if (CurrentStateTimeLeft < 0)
-        {
-            CurrentState = FunnelState.InPositionAroundTarget;
-            CurrentStateTimeLeft = 1;
-        }
-            
-    }
 
-    private void UpdateInPositionAroundTarget()
-    {
-        CurrentStateTimeLeft -= Time.deltaTime;
-        if (CurrentStateTimeLeft < 0)
-        {
-            CurrentState = FunnelState.ManuveringAroundTarget;
-            CurrentStateTimeLeft = 1;
-        }
-    }
-    */
+
+    
 }

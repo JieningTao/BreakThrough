@@ -14,19 +14,8 @@ public class FunnelManager : MonoBehaviour
     private float MinSafetyDistanceToTarget;
 
     [SerializeField]
-    private Funnel ChildFunnel1;
+    public List<Funnel> Funnels = new List<Funnel>();
 
-    [SerializeField]
-    private Funnel ChildFunnel2;
-
-    [SerializeField]
-    private Funnel ChildFunnel3;
-
-    [SerializeField]
-    private Funnel ChildFunnel4;
-
-    [SerializeField]
-    private Funnel ChildFunnel5;
 
 
     private Vector3 GetLocationAroundTarget()
@@ -37,29 +26,62 @@ public class FunnelManager : MonoBehaviour
 
     private void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            Deploy();
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            Recall();
+        }
     }
 
 
     private void Start()
     {
-        StartCoroutine(AssignTargets());
+        //Deploy();
     }
 
     private IEnumerator AssignTargets()
     {
+
         for (int i = 0; i < 100; i++)
         {
-            ChildFunnel1.WhereToBeAt = GetLocationAroundTarget();
-            ChildFunnel2.WhereToBeAt = GetLocationAroundTarget();
-            ChildFunnel3.WhereToBeAt = GetLocationAroundTarget();
-            ChildFunnel4.WhereToBeAt = GetLocationAroundTarget();
-            ChildFunnel5.WhereToBeAt = GetLocationAroundTarget();
+            foreach (Funnel F in Funnels)
+            {
+                if (Random.Range(-1, 1) >= 0)
+                {
+                    F.WhereToBeAt = GetLocationAroundTarget();
+
+                }
+
+
+            }
             yield return new WaitForSeconds(1.5f);
         }
-        
+
+
 
         yield return null;
     }
 
+    private void Deploy()
+    {
+        foreach (Funnel F in Funnels)
+        {
+            F.CurrentState = Funnel.FunnelState.Operational;
+            F.transform.parent = null;
+            F.WhereToBeAt = GetLocationAroundTarget();
+        }
+        StartCoroutine(AssignTargets());
+    }
+
+    private void Recall()
+    {
+        foreach (Funnel F in Funnels)
+        {
+            F.Recall();
+        }
+    }
+        
 }
