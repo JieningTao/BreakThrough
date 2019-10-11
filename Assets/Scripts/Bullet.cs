@@ -4,29 +4,18 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    [SerializeField]
-    public float DestroyTimer;
 
     [SerializeField]
-    public float Damage;
+    private float DestroyTimer = 3;
 
-
-
-
-
-
+    [SerializeField]
+    public float Damage {get; [SerializeField] private set; }
 
 
     // Start is called before the first frame update
-    void Start()
+    virtual protected void Start()
     {
         DestroyObject(this.gameObject, DestroyTimer);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     private void OnCollisionEnter(Collision collision)

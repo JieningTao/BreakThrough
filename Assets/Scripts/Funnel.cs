@@ -16,6 +16,12 @@ public class Funnel : MonoBehaviour
     [SerializeField]
     public FunnelManager ManagedBy;
 
+    [SerializeField]
+    private GameObject LaserBullet;
+
+    [SerializeField]
+    private Transform LaserBulletSpawnLocation;
+
     public FunnelState CurrentState;
     public Vector3 WhereToBeAt;
     private float CurrentStateTimeLeft;
@@ -37,9 +43,10 @@ public class Funnel : MonoBehaviour
     {
         RestPosition = transform.position;
         RestRotation = transform.rotation;
-        RestParent = this.GetComponentInParent<Transform>();
+        RestParent = this.GetComponentInParent<Transform>().parent;
 
         ManagedBy.Funnels.Add(this);
+        ManagedBy.RestingFunnels.Add(this);
     }
 
     // Update is called once per frame
@@ -85,6 +92,21 @@ public class Funnel : MonoBehaviour
     {
         WhereToBeAt = RestPosition;
         CurrentState = FunnelState.Recalling;
+
+            ManagedBy.ActiveFunnels.Remove(this);
+            ManagedBy.RestingFunnels.Add(this);
+        
+    }
+
+    public void Deploy()
+    {
+        CurrentState = Funnel.FunnelState.Operational;
+        transform.parent = null;
+
+            ManagedBy.RestingFunnels.Remove(this);
+            ManagedBy.ActiveFunnels.Add(this);
+
+        StartCoroutine(TryToShoot());
     }
 
     public void CheckDock()
@@ -100,6 +122,38 @@ public class Funnel : MonoBehaviour
     }
 
 
+    public void Shoot(bool Targeted)
+    {
+        if (Targeted)
+        {
+            GameObject NewBullet = Instantiate(LaserBullet, LaserBulletSpawnLocation.position, transform.rotation);
+        }
+    }
 
-    
+    public bool LockedOn()
+    {
+        Debug.Log("tried to shoot");
+        RaycastHit hit;
+        if (Physics.Raycast(LaserBulletSpawnLocation.position, transform.forward, out hit,200f))
+        {
+            if (hit.transform == TargetTransform)
+                return true;
+        }
+            return false;
+    }
+
+    private IEnumerator TryToShoot()
+    {
+
+        while (CurrentState == FunnelState.Operational)
+        {
+            
+            yield return new WaitForSeconds(Random.Range(1f,3f));
+            if(Random.Range(-1f,1f)>=0)
+            Shoot(LockedOn());
+        }
+
+        yield return null;
+    }
+
 }

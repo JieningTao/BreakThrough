@@ -11,21 +11,41 @@ public class Targeting : MonoBehaviour
     private float speed;
 
 
-
+    private bool AssistedAim;
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-
+        Cursor.lockState = CursorLockMode.Locked;
+        AssistedAim = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //transform.rotation = Vector3.RotateTowards(transform.position, TargetTransform.position, 10, 10);
+        if (AssistedAim)
+        {
+            AutoAim();
+        }
+        else
+        {
+            transform.Rotate((new Vector3(Input.GetAxis("Mouse Y")*-1, Input.GetAxis("Mouse X"), 0)) * Time.deltaTime * speed*10);
 
+        }
+
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            AssistedAim = !AssistedAim;
+        }
+
+    }
+
+
+
+    void AutoAim()
+    {
         Vector3 targetDir = TargetTransform.position - transform.position;
 
         float step = speed * Time.deltaTime;
@@ -35,6 +55,5 @@ public class Targeting : MonoBehaviour
 
         // Move our position a step closer to the target.
         transform.rotation = Quaternion.LookRotation(newDir);
-
     }
 }

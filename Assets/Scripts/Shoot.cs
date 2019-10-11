@@ -38,8 +38,7 @@ public class Shoot : MonoBehaviour
             Rigidbody NewBulletRB = NewBullet.GetComponent<Rigidbody>();
             Transform NewBulletT = NewBullet.GetComponent<Transform>();
             Bullet NewBulletScript = NewBullet.GetComponent<Bullet>();
-            NewBulletScript.DestroyTimer = 2;
-            NewBulletScript.Damage = 10;
+            if(NewBulletRB !=null)
             NewBulletRB.velocity = NewBulletT.up * -1 * ShotSpeed;
 
         }
