@@ -132,7 +132,7 @@ public class Funnel : MonoBehaviour
 
     public bool LockedOn()
     {
-        Debug.Log("tried to shoot");
+       
         RaycastHit hit;
         if (Physics.Raycast(LaserBulletSpawnLocation.position, transform.forward, out hit,200f))
         {
