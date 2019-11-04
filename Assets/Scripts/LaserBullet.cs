@@ -8,10 +8,14 @@ public class LaserBullet : Bullet
     [SerializeField]
     private float Speed;
 
+    [SerializeField]
+    private float Damage = 10;
 
+    private string DamageType;
     // Start is called before the first frame update
     protected override void Start()
     {
+        DamageType = "Laser";
         GetComponent<TrailRenderer>().AddPosition(transform.position);
         base.Start();
     }
@@ -19,6 +23,35 @@ public class LaserBullet : Bullet
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.forward * Time.deltaTime * Speed);
+
+        FlightCheck();
+        
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        DealDamageTo(collision.gameObject);
+
+    }
+
+    private void FlightCheck()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, Speed * Time.deltaTime))
+        {
+            transform.Translate(Vector3.forward * hit.distance);
+            DealDamageTo(hit.transform.gameObject);
+        }
+        else
+        {
+            transform.Translate(Vector3.forward * Speed * Time.deltaTime);
+        }
+    }
+
+    private void DealDamageTo(GameObject Target)
+    {
+        if(Target.GetComponent<Target>()!=null)
+        Target.GetComponent<Target>().hit(DamageType, Damage);
+        Destroy(this.gameObject);
     }
 }

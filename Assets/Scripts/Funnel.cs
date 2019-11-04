@@ -26,8 +26,6 @@ public class Funnel : MonoBehaviour
     public Vector3 WhereToBeAt;
     private float CurrentStateTimeLeft;
 
-    public Vector3 RestPosition;
-    public Quaternion RestRotation;
     public Transform RestParent;
 
 
@@ -41,9 +39,8 @@ public class Funnel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        RestPosition = transform.position;
-        RestRotation = transform.rotation;
         RestParent = this.GetComponentInParent<Transform>().parent;
+        
 
         ManagedBy.Funnels.Add(this);
         ManagedBy.RestingFunnels.Add(this);
@@ -90,7 +87,7 @@ public class Funnel : MonoBehaviour
 
     public void Recall()
     {
-        WhereToBeAt = RestPosition;
+        WhereToBeAt = RestParent.position;
         CurrentState = FunnelState.Recalling;
 
             ManagedBy.ActiveFunnels.Remove(this);
@@ -111,11 +108,12 @@ public class Funnel : MonoBehaviour
 
     public void CheckDock()
     {
-        if (Vector3.Distance(RestPosition, transform.position) < 0.1f)
+        WhereToBeAt = RestParent.position;
+        if (Vector3.Distance(RestParent.position, transform.position) < 0.1f)
         {
-            transform.position = RestPosition;
-            transform.rotation = RestRotation;
             transform.parent = RestParent;
+            transform.position = RestParent.position;
+            transform.rotation = RestParent.rotation;
             CurrentState = FunnelState.Resting;
         }
         
