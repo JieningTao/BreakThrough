@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 1562858808240926534}
   - component: {fileID: 1562858808240926537}
   - component: {fileID: 1562858808240926530}
+  - component: {fileID: 789349556}
   m_Layer: 0
   m_Name: Target
-  m_TagString: Untagged
+  m_TagString: DamageAbleObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -121,3 +122,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9edda8349d3ab54780598b630ec7523, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &789349556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562858808240926536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b71af5e508bd3e46a1608d6348cb7e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TeamSignal: Enemy
+  IdentifierSignal: 1

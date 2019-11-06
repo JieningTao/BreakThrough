@@ -14,16 +14,30 @@ public class PlayerController : MonoBehaviour
     private GameObject RightArm;
     [SerializeField]
     private GameObject LeftArm;
+    [SerializeField]
+    private float ScanRadius;
+
+    [SerializeField]
+    private string EnemyFaction;
+
+    [SerializeField]
+    private UITargetManager TargetUIOverlay;
+    
 
     [SerializeField]
     private float SecondsTakenToFullSpeed = 1;
     [SerializeField]
     private float moveSpeed = 10;
 
+    public List<GameObject> Targets = new List<GameObject>();
 
     private Transform MyTransform;
     private float MoveSpeedCurrentMultiplier;
     private Vector3 moveDirection;
+
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,11 +57,45 @@ public class PlayerController : MonoBehaviour
         RotateArmsAndCameraVertical();
     }
 
+
+
     private void FixedUpdate()
     {
         HandleMovement();
+        TargetListCheck();
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            Debug.Log("Scanning");
+            ScanForTargets();
+        }
     }
 
+
+    private void TargetListCheck()
+    {
+        foreach (GameObject T in Targets)
+        {
+            if (T == null)
+            {
+                Targets.Remove(T);
+            }
+        }
+    }
+
+    private void ScanForTargets()
+    {
+        Targets.Clear();
+        Collider[] allOverlappingColliders = Physics.OverlapSphere(this.transform.position, ScanRadius);
+        foreach (Collider C in allOverlappingColliders)
+        {
+            if (C.gameObject.CompareTag("DamageAbleObject") && C.gameObject.GetComponent<EnergySignal>().TeamSignal==EnemyFaction)
+            {
+                Targets.Add(C.gameObject);
+            }
+                
+        }
+        TargetUIOverlay.CreateObjects(Targets);
+    }
 
     private void RotateArmsAndCameraVertical()
     {
