@@ -6,6 +6,8 @@ public class UITargetManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject UITargetPrefab;
+    [SerializeField]
+    private GameObject Player;
 
     public List<GameObject> Targets = new List<GameObject>();
     // Start is called before the first frame update
@@ -25,10 +27,7 @@ public class UITargetManager : MonoBehaviour
         ClearTargets();
         foreach (GameObject T in ScannedTargets)
         {
-            GameObject NewTargetUI = Instantiate(UITargetPrefab, Vector3.zero, transform.rotation);
-            NewTargetUI.transform.parent = this.transform;
-            NewTargetUI.GetComponent<UIFollowTarget>().AssignedTarget = T;
-            Targets.Add(NewTargetUI);
+            AddObject(T);
 
         }
 
@@ -41,5 +40,21 @@ public class UITargetManager : MonoBehaviour
         {
             Destroy(T);
         }
+        Targets.Clear();
+    }
+
+    public void AddTarget(GameObject ObjectToAdd)
+    {
+        AddObject(ObjectToAdd);
+    }
+
+    private void AddObject(GameObject ObjectToAdd)
+    {
+        GameObject NewTargetUI = Instantiate(UITargetPrefab, Vector3.zero, transform.rotation);
+        NewTargetUI.transform.parent = this.transform;
+        UIFollowTarget TUI = NewTargetUI.GetComponent<UIFollowTarget>();
+        TUI.AssignedTarget = ObjectToAdd;
+        TUI.Player = Player;
+        Targets.Add(NewTargetUI);
     }
 }

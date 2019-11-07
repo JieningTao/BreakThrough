@@ -122,5 +122,12 @@ public class PlayerController : MonoBehaviour
         
     }
 
-
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("DamageAbleObject") && other.gameObject.GetComponent<EnergySignal>().TeamSignal == EnemyFaction)
+        {
+            Targets.Add(other.gameObject);
+            TargetUIOverlay.AddTarget(other.gameObject);
+        }
+    }
 }

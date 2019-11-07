@@ -39,21 +39,26 @@ public class TurretTargetScript : MonoBehaviour
         
         Vector3 BaseDir = Vector3.RotateTowards(TurretBase.transform.forward,Target.transform.position - TurretBase.transform.position, TurnSpeed*Time.deltaTime, 0.0f);
 
-        TurretBaseRotation = Quaternion.LookRotation(BaseDir, transform.up);
+        TurretBaseRotation = Quaternion.LookRotation(BaseDir, this.transform.up);
+        //TurretBaseRotation *= Quaternion.Inverse(this.transform.rotation);
+        //TurretBaseRotation.x = transform.rotation.x;
+        //TurretBaseRotation.z = transform.rotation.z;
+        TurretBase.transform.rotation = TurretBaseRotation;
+        TurretBaseRotation = TurretBase.transform.localRotation;
         TurretBaseRotation.x = 0;
         TurretBaseRotation.z = 0;
+        TurretBase.transform.localRotation = TurretBaseRotation;
 
-        TurretBase.transform.localRotation = TurretBaseRotation ;
 
 
-        
+
         Vector3 HeadDir = Vector3.RotateTowards(TurretHead.transform.forward,Target.transform.position - TurretHead.transform.position, TurnSpeed * Time.deltaTime, 0.0f);
         
-        TurretHeadRotation = Quaternion.LookRotation(HeadDir, transform.up);
-        TurretHeadRotation.y = 0;
-        TurretHeadRotation.z = 0;
+        TurretHeadRotation = Quaternion.LookRotation(HeadDir, this.transform.up);
+        //TurretHeadRotation.y = 0;
+        //TurretHeadRotation.z = 0;
 
-        TurretHead.transform.localRotation = TurretHeadRotation ;
+        TurretHead.transform.rotation = TurretHeadRotation ;
 
 
         /*
