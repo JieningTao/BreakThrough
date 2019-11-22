@@ -6,6 +6,13 @@ public class UITargetManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject UITargetPrefab;
+
+    [SerializeField]
+    private GameObject UIFunnelPrefab;
+
+    [SerializeField]
+    private GameObject UIMissilePrefab;
+
     [SerializeField]
     private GameObject Player;
 
@@ -50,7 +57,28 @@ public class UITargetManager : MonoBehaviour
 
     private void AddObject(GameObject ObjectToAdd)
     {
-        GameObject NewTargetUI = Instantiate(UITargetPrefab, Vector3.zero, transform.rotation);
+        GameObject NewTargetUI = new GameObject();
+
+        switch (ObjectToAdd.GetComponent<EnergySignal>().MySignalType)
+        {
+            case EnergySignal.SignalType.Default:
+                NewTargetUI = Instantiate(UITargetPrefab, Vector3.zero, transform.rotation);
+                break;
+            case EnergySignal.SignalType.Missile:
+                NewTargetUI = Instantiate(UIMissilePrefab, Vector3.zero, transform.rotation);
+                break;
+            case EnergySignal.SignalType.Funnel:
+                NewTargetUI = Instantiate(UIFunnelPrefab, Vector3.zero, transform.rotation);
+                break;
+            default:
+
+                break;
+        }
+
+        //GameObject NewTargetUI = Instantiate(UITargetPrefab, Vector3.zero, transform.rotation);
+
+
+
         NewTargetUI.transform.parent = this.transform;
         UIFollowTarget TUI = NewTargetUI.GetComponent<UIFollowTarget>();
         TUI.AssignedTarget = ObjectToAdd;

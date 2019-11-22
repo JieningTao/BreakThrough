@@ -9,7 +9,10 @@ public class Bullet : MonoBehaviour
     private float DestroyTimer = 3;
 
     [SerializeField]
-    public float Damage {get; [SerializeField] private set; }
+    public float Damage;
+
+    [SerializeField]
+    protected string DamageType;
 
 
     // Start is called before the first frame update

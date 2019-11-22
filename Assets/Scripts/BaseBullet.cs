@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LaserBullet : Bullet
+public class BaseBullet : Bullet
 {
 
     [SerializeField]
     private float Speed;
 
-    [SerializeField]
-    private float Damage = 10;
 
-    private string DamageType;
+    
     // Start is called before the first frame update
     protected override void Start()
     {

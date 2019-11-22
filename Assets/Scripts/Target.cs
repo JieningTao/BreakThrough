@@ -5,7 +5,8 @@ using UnityEngine;
 public class Target : MonoBehaviour
 {
 
-
+    [SerializeField]
+    private float Health;
 
     private EnergySignal MySignal;
     // Start is called before the first frame update
@@ -24,6 +25,8 @@ public class Target : MonoBehaviour
 
     public void hit(string DamageType,float DamageValue)
     {
-        Destroy(this.gameObject);
+        Health -= DamageValue;
+        if(Health<=0)
+            Destroy(this.gameObject);
     }
 }

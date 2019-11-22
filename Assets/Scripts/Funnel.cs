@@ -25,6 +25,8 @@ public class Funnel : MonoBehaviour
     public FunnelState CurrentState;
     public Vector3 WhereToBeAt;
     private float CurrentStateTimeLeft;
+    private EnergySignal MySignal;
+    private Collider MySignalCollider;
 
     public Transform RestParent;
 
@@ -39,8 +41,12 @@ public class Funnel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        RestParent = this.GetComponentInParent<Transform>().parent;
         
+        RestParent = this.GetComponentInParent<Transform>().parent;
+        MySignalCollider = GetComponent<Collider>();
+        MySignal = GetComponent<EnergySignal>();
+        MySignal.enabled = false;
+        MySignalCollider.enabled = false;
 
         ManagedBy.Funnels.Add(this);
         ManagedBy.RestingFunnels.Add(this);
@@ -99,9 +105,10 @@ public class Funnel : MonoBehaviour
     {
         CurrentState = Funnel.FunnelState.Operational;
         transform.parent = null;
-
-            ManagedBy.RestingFunnels.Remove(this);
-            ManagedBy.ActiveFunnels.Add(this);
+        MySignal.enabled = true;
+        MySignalCollider.enabled = true;
+        ManagedBy.RestingFunnels.Remove(this);
+        ManagedBy.ActiveFunnels.Add(this);
 
         StartCoroutine(TryToShoot());
     }
@@ -115,6 +122,8 @@ public class Funnel : MonoBehaviour
             transform.position = RestParent.position;
             transform.rotation = RestParent.rotation;
             CurrentState = FunnelState.Resting;
+            MySignal.enabled = false;
+            MySignalCollider.enabled = false;
         }
         
     }

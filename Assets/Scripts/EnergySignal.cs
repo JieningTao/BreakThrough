@@ -14,6 +14,17 @@ public class EnergySignal : MonoBehaviour
         get { return TeamSignal + "-" + IdentifierSignal; }
     }
 
+    [SerializeField]
+    public SignalType MySignalType;
+
+    public enum SignalType
+    {
+        Default,
+        Funnel,
+        Missile,
+        Unknown,
+    }
+
 
 
 
