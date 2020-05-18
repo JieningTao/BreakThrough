@@ -20,16 +20,20 @@ public class Missile : Bullet
 
 
 
+    protected bool Activated;
+
     // Start is called before the first frame update
     void Start()
     {
+        Activated = false;
+        StartCoroutine(ActivationTimer());
         base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
-        if(Activated())
+        if(Activated)
         TrackTarget();
         Fly();
     }
@@ -39,7 +43,7 @@ public class Missile : Bullet
         DealDamageTo(collision.gameObject);
     }
 
-    private void DealDamageTo(GameObject Target)
+    protected void DealDamageTo(GameObject Target)
     {
         if (Target.GetComponent<Target>() != null)
             Target.GetComponent<Target>().hit(DamageType, Damage);
@@ -48,28 +52,28 @@ public class Missile : Bullet
 
     private void TrackTarget()
     {
+        if (Target != null)
+        {
 
-        Vector3 newDir = Vector3.RotateTowards(transform.forward, Target.transform.position - transform.position, TrackingSpeed * Time.deltaTime, 0.0f);
-        Debug.DrawRay(transform.position, newDir, Color.red);
 
-        // Move our position a step closer to the target.
-        transform.rotation = Quaternion.LookRotation(newDir);
+            Vector3 newDir = Vector3.RotateTowards(transform.forward, Target.transform.position - transform.position, TrackingSpeed * Time.deltaTime, 0.0f);
+            Debug.DrawRay(transform.position, newDir, Color.red);
+
+            // Move our position a step closer to the target.
+            transform.rotation = Quaternion.LookRotation(newDir);
+        }
     }
 
     private void Fly()
     {
         transform.Translate(Vector3.forward * FlightSpeed * Time.deltaTime);
     }
-    private bool Activated()
-    {
-        if (ActivationDelay <= 0)
-            return true;
-        else
-        {
-            ActivationDelay -= Time.deltaTime;
-            return false;
-        }
 
+    protected IEnumerator ActivationTimer()
+    {
+        yield return new WaitForSeconds(ActivationDelay);
+        Activated = true;
+        yield return null;
     }
 
 }

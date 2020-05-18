@@ -13,13 +13,13 @@ public class BaseBullet : Bullet
     // Start is called before the first frame update
     protected override void Start()
     {
-        DamageType = "Laser";
+        //DamageType = "Laser";
         GetComponent<TrailRenderer>().AddPosition(transform.position);
         base.Start();
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
 
         FlightCheck();
@@ -32,7 +32,7 @@ public class BaseBullet : Bullet
 
     }
 
-    private void FlightCheck()
+    protected virtual void FlightCheck()
     {
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, Speed * Time.deltaTime))
@@ -46,7 +46,7 @@ public class BaseBullet : Bullet
         }
     }
 
-    private void DealDamageTo(GameObject Target)
+    protected virtual void DealDamageTo(GameObject Target)
     {
         if(Target.GetComponent<Target>()!=null)
         Target.GetComponent<Target>().hit(DamageType, Damage);

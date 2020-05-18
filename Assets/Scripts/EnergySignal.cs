@@ -4,20 +4,18 @@ using UnityEngine;
 
 public class EnergySignal : MonoBehaviour
 {
-    [SerializeField]
-    public string TeamSignal;
-    [SerializeField]
-    public string IdentifierSignal;
-
-    public string FullSignal
-    {
-        get { return TeamSignal + "-" + IdentifierSignal; }
-    }
 
     [SerializeField]
-    public SignalType MySignalType;
+    private string TeamSignal;
+    [SerializeField]
+    private string IdentifierSignal;
 
-    public enum SignalType
+    
+
+    [SerializeField]
+    public SignalObjectType MySignalType;
+
+    public enum SignalObjectType
     {
         Default,
         Funnel,
@@ -25,18 +23,29 @@ public class EnergySignal : MonoBehaviour
         Unknown,
     }
 
-
-
-
-    // Start is called before the first frame update
-    void Start()
+    public enum SignalFactionType
     {
-        
+        Enemy,
+        Friendly,
+        Ally,
+        Neutral,
+        Unknown,
     }
 
-    // Update is called once per frame
-    void Update()
+    public string GetFullSignal
     {
-        
+        get { return TeamSignal + "-" + IdentifierSignal; }
     }
+    public string GetTeamSignal
+    {
+        get { return TeamSignal; }
+    }
+    public string GetIdentifierSignal
+    {
+        get { return IdentifierSignal; }
+    }
+
+
+
+
 }

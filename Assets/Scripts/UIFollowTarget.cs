@@ -13,25 +13,32 @@ public class UIFollowTarget : MonoBehaviour
     [SerializeField]
     private UnityEngine.UI.Text Distance;
 
+    [SerializeField]
+    public EnergySignal.SignalFactionType MySFType;
     private Vector3 TargetPosition;
     private EnergySignal TargetSignal;
-    // Start is called before the first frame update
-    void Start()
+
+    public void Initialize()
     {
         TargetSignal = AssignedTarget.GetComponent<EnergySignal>();
-        Name.text = TargetSignal.IdentifierSignal;
+        Name.text = TargetSignal.GetIdentifierSignal;
+        MySFType = Player.GetComponent<PlayerController>().FactionCheck(TargetSignal);
     }
 
+    public EnergySignal GetTargetSignal
+    {
+         get{ return TargetSignal; }
+    }
     // Update is called once per frame
     void FixedUpdate()
     {
-        
+
         if (AssignedTarget != null)
         {
             TargetPosition = AssignedTarget.transform.position;
-            Distance.text = (int)Vector3.Distance(Player.transform.position, AssignedTarget.transform.position)+" ";
+            Distance.text = (int)Vector3.Distance(Player.transform.position, AssignedTarget.transform.position) + " ";
         }
-        else
+        else if (TargetSignal.MySignalType == EnergySignal.SignalObjectType.Default)
         {
             this.GetComponent<UnityEngine.UI.Text>().fontSize = 20;
             this.GetComponent<UnityEngine.UI.Text>().text = "< Lost >";
@@ -40,7 +47,23 @@ public class UIFollowTarget : MonoBehaviour
 
             Destroy(this.gameObject, 1);
         }
+        else
+        {
+            Destroy(this.gameObject);
+        }
 
-        transform.position = Camera.main.WorldToScreenPoint(TargetPosition);
+        if (Vector3.Dot(Player.transform.forward.normalized, (TargetPosition - Player.transform.position).normalized) >= 0)
+        {
+            transform.position = Camera.main.WorldToScreenPoint(TargetPosition);
+        }
     }
+
+    public void ShowDetails(bool IfToShow)
+    {
+        Name.gameObject.SetActive(IfToShow);
+        Distance.gameObject.SetActive(IfToShow);
+    }
+
+   
+
 }

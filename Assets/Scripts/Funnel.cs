@@ -28,7 +28,7 @@ public class Funnel : MonoBehaviour
     private EnergySignal MySignal;
     private Collider MySignalCollider;
 
-    public Transform RestParent;
+    private Transform RestParent;
 
 
     public enum FunnelState
@@ -58,8 +58,11 @@ public class Funnel : MonoBehaviour
         switch (CurrentState)
         {
             case (FunnelState.Operational):
+                if (CheckTargetValidity())
+                {
                 TurnToTarget(TargetTransform.position);
                 MoveToWTBA();
+                }
                 break;
             case (FunnelState.Recalling):
                 TurnToTarget(WhereToBeAt);
@@ -73,7 +76,19 @@ public class Funnel : MonoBehaviour
         
 
     }
-
+ 
+    private bool CheckTargetValidity()
+    {
+        if (TargetTransform != null)
+        {
+            return true;
+        }
+        else
+        {
+            CurrentState = FunnelState.Recalling;
+        }
+        return false;
+    }
 
     void MoveToWTBA()
     {

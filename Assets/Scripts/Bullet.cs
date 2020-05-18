@@ -6,7 +6,7 @@ public class Bullet : MonoBehaviour
 {
 
     [SerializeField]
-    private float DestroyTimer = 3;
+    protected float DestroyTimer = 3;
 
     [SerializeField]
     public float Damage;

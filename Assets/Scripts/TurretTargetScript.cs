@@ -30,6 +30,7 @@ public class TurretTargetScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Target!=null)
         TurnToTarget(Target.transform.position);
     }
 
@@ -40,25 +41,25 @@ public class TurretTargetScript : MonoBehaviour
         Vector3 BaseDir = Vector3.RotateTowards(TurretBase.transform.forward,Target.transform.position - TurretBase.transform.position, TurnSpeed*Time.deltaTime, 0.0f);
 
         TurretBaseRotation = Quaternion.LookRotation(BaseDir, this.transform.up);
-        //TurretBaseRotation *= Quaternion.Inverse(this.transform.rotation);
-        //TurretBaseRotation.x = transform.rotation.x;
-        //TurretBaseRotation.z = transform.rotation.z;
         TurretBase.transform.rotation = TurretBaseRotation;
+        //the following portion removes all rotation excpt Y axis
         TurretBaseRotation = TurretBase.transform.localRotation;
         TurretBaseRotation.x = 0;
         TurretBaseRotation.z = 0;
         TurretBase.transform.localRotation = TurretBaseRotation;
-
+        
 
 
 
         Vector3 HeadDir = Vector3.RotateTowards(TurretHead.transform.forward,Target.transform.position - TurretHead.transform.position, TurnSpeed * Time.deltaTime, 0.0f);
         
         TurretHeadRotation = Quaternion.LookRotation(HeadDir, this.transform.up);
-        //TurretHeadRotation.y = 0;
-        //TurretHeadRotation.z = 0;
-
         TurretHead.transform.rotation = TurretHeadRotation ;
+        //need to do the same for turret head or it will rotate y on top of base y rotation
+        TurretHeadRotation = TurretHead.transform.localRotation;
+        TurretHeadRotation.y = 0;
+        TurretHeadRotation.z = 0;
+        TurretHead.transform.localRotation = TurretHeadRotation;
 
 
         /*

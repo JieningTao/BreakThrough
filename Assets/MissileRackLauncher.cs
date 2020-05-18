@@ -52,6 +52,7 @@ public class MissileRackLauncher : MonoBehaviour
 
     private void Shoot()
     {
+        Targets = GetComponentInParent<PlayerController>().Targets;
         GameObject NewMissile = Instantiate(Missile, MissileSpawnLocations[CurrentBarrel].position, transform.rotation);
         Missile NewMissileScript = NewMissile.GetComponent<Missile>();
         NewMissileScript.Damage = ShotDamage;
@@ -64,5 +65,10 @@ public class MissileRackLauncher : MonoBehaviour
             CurrentBarrel = 0;
         if (CurrentTarget == Targets.Count)
             CurrentTarget = 0;
+
+        if (NewMissile.GetComponent<SplitMissile>() != null)
+        {
+            NewMissile.GetComponent<SplitMissile>().Targets = Targets;
+        }
     }
 }
