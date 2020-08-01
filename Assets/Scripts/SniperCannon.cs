@@ -6,11 +6,20 @@ public class SniperCannon : BaseShoot
 {
 
 
+    bool ReadyToFire;
 
+    private void Start()
+    {
+        ReadyToFire = true;
+    }
 
     public override void Fire(bool button)
     {
-        if (button)
+        if (Magazine == 0)
+        {
+            StartCoroutine(Reload());
+        }
+        else if (button && ReadyToFire)
             Shoot();
     }
 
@@ -31,5 +40,14 @@ public class SniperCannon : BaseShoot
         if (CurrentBarrel == ProjectileSpawnLocations.Count)
             CurrentBarrel = 0;
 
+        StartCoroutine(Fired());
+
+    }
+
+    protected IEnumerator Fired()
+    {
+        ReadyToFire = false;
+        yield return new WaitForSeconds(TimeBetweenShot);
+        ReadyToFire = true;
     }
 }

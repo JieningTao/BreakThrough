@@ -119,7 +119,7 @@ public class UITargetManager : MonoBehaviour
 
     void AdjustColor(GameObject UIElement)
     {
-        Debug.Log("Color Adjusting");
+        //Debug.Log("Color Adjusting");
         Color ColorToBe = Color.white;
         UIFollowTarget UIScript;
         UIScript = UIElement.GetComponent<UIFollowTarget>();
@@ -152,5 +152,10 @@ public class UITargetManager : MonoBehaviour
         {
             a.color = ColorToBe;
         }
+        foreach (UnityEngine.UI.Image a in UIElement.GetComponentsInChildren<UnityEngine.UI.Image>())
+        {
+            a.color = ColorToBe;
+        }
+
     }
 }

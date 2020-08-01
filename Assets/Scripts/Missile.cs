@@ -23,7 +23,7 @@ public class Missile : Bullet
     protected bool Activated;
 
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         Activated = false;
         StartCoroutine(ActivationTimer());
@@ -31,7 +31,7 @@ public class Missile : Bullet
     }
 
     // Update is called once per frame
-    protected void Update()
+    protected virtual void Update()
     {
         if(Activated)
         TrackTarget();
@@ -43,10 +43,15 @@ public class Missile : Bullet
         DealDamageTo(collision.gameObject);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        DealDamageTo(collision.gameObject);
+    }
+
     protected void DealDamageTo(GameObject Target)
     {
-        if (Target.GetComponent<Target>() != null)
-            Target.GetComponent<Target>().hit(DamageType, Damage);
+        if (Target.GetComponent<Damageable>() != null)
+            Target.GetComponent<Damageable>().hit(DamageType, Damage);
         Destroy(this.gameObject);
     }
 

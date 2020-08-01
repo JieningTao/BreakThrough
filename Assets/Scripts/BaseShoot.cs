@@ -53,6 +53,7 @@ public class BaseShoot : MonoBehaviour
         if (ManualControl)
         {
             ManualInput();
+            if(Ammo!=null)
             UpdateUI();
         }
     }
@@ -61,12 +62,12 @@ public class BaseShoot : MonoBehaviour
 
     protected virtual IEnumerator AutoFire()
     {
-        while (CurrentlyFiring)
+        while (CurrentlyFiring&&!Reloading)
         {
             Shoot();
             yield return new WaitForSeconds(TimeBetweenShot);
         }
-
+        Debug.Log("Fire Cycle Ended");
         yield return null;
     }
 
@@ -75,14 +76,30 @@ public class BaseShoot : MonoBehaviour
         if (button)
         {
             CurrentlyFiring = true;
-            StopAllCoroutines();
+            //StopAllCoroutines();
             StartCoroutine(AutoFire());
         }
         else
         {
             CurrentlyFiring = false;
-            StopAllCoroutines();
+            //StopAllCoroutines();
         }
+    }
+
+    public virtual void Fire(int Burst)
+    {
+        StartCoroutine(BurstFire(Burst));
+    }
+
+    protected virtual IEnumerator BurstFire(int BurstAmount)
+    {
+        while(BurstAmount > 0)
+        {
+            Shoot();
+            BurstAmount--;
+            yield return new WaitForSeconds(TimeBetweenShot);
+        }
+        
     }
 
     protected virtual void Shoot()
@@ -113,13 +130,14 @@ public class BaseShoot : MonoBehaviour
     protected void ManualInput()
     {
         if (!Reloading)
-        { 
-        CurrentlyFiring = Input.GetMouseButton(0);
-        if (Input.GetMouseButtonDown(0))
-            Fire(true);
+        {
+            if (Input.GetMouseButtonDown(0))
+                Fire(true);
+
+        }
         if (Input.GetMouseButtonUp(0))
             Fire(false);
-        }
+
         if (Input.GetKeyDown(KeyCode.R) && Magazine != MaxMagazine)
             StartCoroutine(Reload());
     }
@@ -159,7 +177,11 @@ public class BaseShoot : MonoBehaviour
             yield return new WaitForSeconds(ReloadTime);
             ReloadMagazine();
             Reloading = false;
-        
+        if (CurrentlyFiring)
+        {
+            StartCoroutine(AutoFire());
+        }
+
         yield return null;
     }
 

@@ -106,7 +106,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2041891062359620153
 Transform:
   m_ObjectHideFlags: 0
@@ -141,9 +141,14 @@ MonoBehaviour:
   - {fileID: 2041891061589808563}
   - {fileID: 2041891061989031422}
   SpreadAngle: 1
-  TimeBetweenShot: 0.1
+  TimeBetweenShot: 0.08
   ShotDamage: 10
   ManualControl: 1
+  Ammo: {fileID: 0}
+  MaxMagazine: 30
+  Magazine: 30
+  ReserveAmmo: 270
+  ReloadTime: 2.5
 --- !u!1001 &2041891062419102678
 PrefabInstance:
   m_ObjectHideFlags: 0

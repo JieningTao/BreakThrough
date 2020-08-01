@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3704963524026239062}
   - component: {fileID: 3704963524026239057}
+  - component: {fileID: 8934741863115123291}
   m_Layer: 0
   m_Name: Hex Funnel
   m_TagString: Untagged
@@ -59,6 +60,32 @@ MonoBehaviour:
   MaxSafetyDistanceToTarget: 10
   MinSafetyDistanceToTarget: 8
   CurrentState: 1
+--- !u!114 &8934741863115123291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3704963524026239063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 674b9cb9846548f4d9c22e6eb11b4736, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Projectile: {fileID: 6217974686223292232, guid: 4d0141114a559494f81b9efa86d55309,
+    type: 3}
+  ProjectileSpawnLocations:
+  - {fileID: 3704963525491827157}
+  - {fileID: 3704963525665682201}
+  SpreadAngle: 2
+  TimeBetweenShot: 0.4
+  ShotDamage: 20
+  ManualControl: 0
+  Ammo: {fileID: 0}
+  MaxMagazine: 2
+  Magazine: 2
+  ReserveAmmo: 20
+  ReloadTime: 0.1
 --- !u!1 &3704963524526356700
 GameObject:
   m_ObjectHideFlags: 0

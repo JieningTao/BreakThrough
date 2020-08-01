@@ -32,6 +32,8 @@ public class HexFunnel : MonoBehaviour
     [SerializeField]
     private float MinSafetyDistanceToTarget;
 
+    [SerializeField]
+    private Vector2 FireRandomInterval = new Vector2(2,4);
 
     private Transform RestParent;
 
@@ -43,8 +45,9 @@ public class HexFunnel : MonoBehaviour
     private Transform CurrentLookTarget;
     private Transform ObjectToFollow;
     private Vector3 FollowOffset;
-
+    private BaseShoot MyWeapon;
     public HexFunnelState CurrentState;
+    public float FireCoolDown;
 
     public enum HexFunnelState
     {
@@ -52,14 +55,12 @@ public class HexFunnel : MonoBehaviour
         Resting,
         Attacking,
         Guarding,
-
-
     }
 
     void Start()
     {
         RestParent = this.GetComponentInParent<Transform>().parent;
-        
+        MyWeapon = GetComponent<BaseShoot>();
         ManagedBy.Funnels.Add(this);
         ManagedBy.RestingFunnels.Add(this);
         
@@ -78,6 +79,7 @@ public class HexFunnel : MonoBehaviour
             if (CurrentState == HexFunnelState.Attacking)
             {
                 GetAttackPosition();
+                
             }
             else if (CurrentState == HexFunnelState.Guarding)
             {
@@ -147,6 +149,7 @@ public class HexFunnel : MonoBehaviour
                 if (CheckTargetValidity())
                 {
                     TurnToTarget(TargetTransform.position);
+                    TryToFire();
                     MoveToWTBA();
                 }
                 break;
@@ -194,7 +197,7 @@ public class HexFunnel : MonoBehaviour
         }
         else
         {
-            CurrentState = HexFunnelState.Recalling;
+            Recall();
         }
         return false;
     }
@@ -217,34 +220,49 @@ public class HexFunnel : MonoBehaviour
 
     public void Recall()
     {
+        if (CurrentState != HexFunnelState.Resting)
+        {
+            ObjectToFollow = RestParent;
+            FollowOffset = Vector3.zero;
+            SwitchToRecall();
+            CurrentState = HexFunnelState.Recalling;
 
-        ObjectToFollow = RestParent;
-        FollowOffset = Vector3.zero;
-        SwitchToRecall();
-        CurrentState = HexFunnelState.Recalling;
-
-        ManagedBy.ActiveFunnels.Remove(this);
-        ManagedBy.RestingFunnels.Add(this);
-
+            ManagedBy.ActiveFunnels.Remove(this);
+            ManagedBy.RestingFunnels.Add(this);
+        }
     }
 
     public void Deploy(Transform Target)
     {
-        transform.parent = null;
-        CurrentState = HexFunnelState.Attacking;
-        TargetTransform = Target;
-        GetAttackPosition();
-        SwitchToFire();
-        
-        
-        /*
-        MySignal.enabled = true;
-        MySignalCollider.enabled = true;
-        */
-        ManagedBy.RestingFunnels.Remove(this);
-        ManagedBy.ActiveFunnels.Add(this);
-        StartCoroutine(Move());
-        //StartCoroutine(TryToShoot());
+        if (CurrentState == HexFunnelState.Resting)
+        {
+            transform.parent = null;
+            CurrentState = HexFunnelState.Attacking;
+            TargetTransform = Target;
+            GetAttackPosition();
+            SwitchToFire();
+            FireCoolDown = Random.Range(FireRandomInterval.x, FireRandomInterval.y);
+
+            /*
+            MySignal.enabled = true;
+            MySignalCollider.enabled = true;
+            */
+            ManagedBy.RestingFunnels.Remove(this);
+            ManagedBy.ActiveFunnels.Add(this);
+            StartCoroutine(Move());
+            //StartCoroutine(TryToShoot());
+        }
+    }
+
+    void TryToFire()
+    {
+        FireCoolDown -= Time.deltaTime;
+
+        if (FireCoolDown < 0)
+        {
+            MyWeapon.Fire(2);//the hex funnel is built as a 2 shot weapon, hence the magic number
+            FireCoolDown = Random.Range(FireRandomInterval.x, FireRandomInterval.y);
+        }
     }
 
     public void CheckDock()

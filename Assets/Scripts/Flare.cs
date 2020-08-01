@@ -17,7 +17,7 @@ public class Flare : MonoBehaviour
     private GameObject Actualflare;
 
     [SerializeField]
-    private Color FlareColor;
+    public Color FlareColor;
 
 
 
@@ -37,6 +37,15 @@ public class Flare : MonoBehaviour
         FlareComponent.color = FlareColor;
         Actualflare.SetActive(false);
         FlareIntensity = FlareComponent.brightness;
+    }
+
+    public void SetUpFlare(float _FlightSpeed, float _ExplosionDelay, float _FlareDuration, Color _FlareColor)
+    {
+        FlightSpeed = _FlightSpeed;
+        ExplosionDelay = _ExplosionDelay;
+        FlareDuration = _FlareDuration;
+        FlareColor = _FlareColor;
+        Start();
     }
 
     void Update()

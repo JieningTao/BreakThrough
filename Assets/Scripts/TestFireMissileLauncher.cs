@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MissileRackLauncher : MonoBehaviour
+public class TestFireMissileLauncher : MonoBehaviour
 {
-
     [SerializeField]
     private GameObject Missile;
 
@@ -32,7 +31,7 @@ public class MissileRackLauncher : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.O))
         {
             StartCoroutine(FireAll());
         }
@@ -45,15 +44,15 @@ public class MissileRackLauncher : MonoBehaviour
             Shoot();
             yield return new WaitForSeconds(TBS);
         }
-            
+
 
         yield return null;
     }
 
     private void Shoot()
     {
-        Targets = GetComponentInParent<PlayerController>().Targets;
-        GameObject NewMissile = Instantiate(Missile, MissileSpawnLocations[CurrentBarrel].position, transform.rotation);
+        //Targets = GetComponentInParent<PlayerController>().Targets;
+        GameObject NewMissile = Instantiate(Missile, MissileSpawnLocations[CurrentBarrel].position, MissileSpawnLocations[CurrentBarrel].rotation);
         Missile NewMissileScript = NewMissile.GetComponent<Missile>();
         NewMissileScript.Damage = ShotDamage;
         NewMissileScript.Target = Targets[CurrentTarget];

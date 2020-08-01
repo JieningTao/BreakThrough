@@ -9652,7 +9652,7 @@ MonoBehaviour:
   Damage: 10
   DamageType: Missile
   Target: {fileID: 0}
-  FlightSpeed: 35
+  FlightSpeed: 25
   TrackingSpeed: 4
   ActivationDelay: 0.1
 --- !u!136 &6672007395429639972

@@ -213,7 +213,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2262781688283794274
 Transform:
   m_ObjectHideFlags: 0
@@ -253,11 +253,14 @@ MonoBehaviour:
   - {fileID: 2262781687353022127}
   - {fileID: 2262781688258139341}
   SpreadAngle: 4
-  TimeBetweenShot: 2
+  TimeBetweenShot: 0.4
   ShotDamage: 5
   ManualControl: 1
-  MagazineSize: 8
-  ReserveSize: 64
+  Ammo: {fileID: 0}
+  MaxMagazine: 16
+  Magazine: 16
+  ReserveAmmo: 64
+  ReloadTime: 3
   ShotAmount: 20
 --- !u!1 &2850784191104694028
 GameObject:

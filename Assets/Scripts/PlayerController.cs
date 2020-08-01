@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
     private float MoveSpeedCurrentMultiplier;
     private Vector3 moveDirection;
     private PlayerIFF MyEnergySignal;
-
+    public bool InMenu = false;
     private Camera MyCamera;
 
 
@@ -60,16 +60,16 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-
-        transform.Rotate((new Vector3(0, Input.GetAxis("Mouse X"), 0)) * Time.deltaTime * Rotationspeed * 10);
-
-
-
-        RotateArmsAndCameraVertical();
+        if (!InMenu)
+        {
+            transform.Rotate((new Vector3(0, Input.GetAxis("Mouse X"), 0)) * Time.deltaTime * Rotationspeed * 10);
+            RotateArmsAndCameraVertical();
+        }
     }
 
 
+
+    
 
     private void FixedUpdate()
     {
@@ -83,6 +83,8 @@ public class PlayerController : MonoBehaviour
         }
         */
     }
+
+    
 
 
     private void TargetListCheck()
@@ -179,29 +181,29 @@ public class PlayerController : MonoBehaviour
     {
         if (SignalToCheck.GetTeamSignal == MyEnergySignal.GetTeamSignal)
         {
-            Debug.Log("F");
+            //Debug.Log("F");
             return EnergySignal.SignalFactionType.Friendly;
         }
         else if (MyEnergySignal.GetAllyFactions.Contains(SignalToCheck.GetTeamSignal))
         {
-            Debug.Log("A");
+            //Debug.Log("A");
             return EnergySignal.SignalFactionType.Ally;
         }
         else if (MyEnergySignal.GetEnemyFactions.Contains(SignalToCheck.GetTeamSignal))
         {
-            Debug.Log("E");
+            //Debug.Log("E");
             return EnergySignal.SignalFactionType.Enemy;
         }
         else if (MyEnergySignal.GetNeutralFactions.Contains(SignalToCheck.GetTeamSignal))
         {
-            Debug.Log("N");
+            //Debug.Log("N");
             return EnergySignal.SignalFactionType.Neutral;
         }
         else
         {
-            Debug.Log("U");
+            //Debug.Log("U");
             return EnergySignal.SignalFactionType.Unknown;
         }
     }
-    
+
 }

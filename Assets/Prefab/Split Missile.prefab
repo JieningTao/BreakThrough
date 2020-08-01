@@ -102,9 +102,9 @@ MonoBehaviour:
   Damage: 5
   DamageType: Missile
   Target: {fileID: 0}
-  FlightSpeed: 20
+  FlightSpeed: 15
   TrackingSpeed: 4
-  ActivationDelay: 0.5
+  ActivationDelay: 1.2
   MissileSpawns:
   - {fileID: 8319561615117621068}
   - {fileID: 8319561616077273200}

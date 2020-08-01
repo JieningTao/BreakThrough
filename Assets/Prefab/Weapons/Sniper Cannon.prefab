@@ -156,12 +156,15 @@ MonoBehaviour:
     type: 3}
   ProjectileSpawnLocations:
   - {fileID: 576610563240726867}
-  SpreadAngle: 1
-  TimeBetweenShot: 12
+  SpreadAngle: 0.01
+  TimeBetweenShot: 1
   ShotDamage: 50
   ManualControl: 1
-  MagazineSize: 5
-  ReserveSize: 40
+  Ammo: {fileID: 0}
+  MaxMagazine: 5
+  Magazine: 5
+  ReserveAmmo: 40
+  ReloadTime: 4
 --- !u!1 &1751181013900472428
 GameObject:
   m_ObjectHideFlags: 0

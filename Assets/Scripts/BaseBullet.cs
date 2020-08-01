@@ -6,7 +6,7 @@ public class BaseBullet : Bullet
 {
 
     [SerializeField]
-    private float Speed;
+    public float Speed = 200;
 
 
     
@@ -48,8 +48,8 @@ public class BaseBullet : Bullet
 
     protected virtual void DealDamageTo(GameObject Target)
     {
-        if(Target.GetComponent<Target>()!=null)
-        Target.GetComponent<Target>().hit(DamageType, Damage);
+        if(Target.GetComponent<Damageable>()!=null)
+        Target.GetComponent<Damageable>().hit(DamageType, Damage);
         Destroy(this.gameObject);
     }
 }

@@ -20,8 +20,9 @@ public class HexFunnelManager : MonoBehaviour
     public List<HexFunnel> RestingFunnels = new List<HexFunnel>();
 
     public bool DefensivePositioons;
+    private List<GameObject> Targets;
 
-
+    private int CurrentTarget;
 
     private Vector3 GetLocationInRange()
     {
@@ -30,7 +31,9 @@ public class HexFunnelManager : MonoBehaviour
 
     private void Start()
     {
+        Targets = GetComponent<PlayerController>().Targets;
         DefensivePositioons = false;
+        CurrentTarget = 0;
     }
 
     private void Update()
@@ -51,7 +54,7 @@ public class HexFunnelManager : MonoBehaviour
 
 
 
-
+    /*
     private IEnumerator AssignPositions()
     {
 
@@ -64,7 +67,7 @@ public class HexFunnelManager : MonoBehaviour
                     if (DefensivePositioons)
                         F.GiveNewPosition(transform,GetLocationInRange());
                     else
-                        F.GiveNewPosition(GetLocationInRange() + TargetTransform.position);
+                        F.GiveNewPosition(GetLocationInRange() + F.TargetTransform.position);
                 }
             }
             yield return new WaitForSeconds(1.5f);
@@ -72,6 +75,9 @@ public class HexFunnelManager : MonoBehaviour
 
         yield return null;
     }
+    */
+
+
 
 
     private void SwitchToGuard()
@@ -90,7 +96,7 @@ public class HexFunnelManager : MonoBehaviour
         }
     }
 
-    private void SwitchStates()
+    public void SwitchStates()
     {
         if (DefensivePositioons)
         {
@@ -106,9 +112,9 @@ public class HexFunnelManager : MonoBehaviour
             
     }
 
-    private void Deploy()
+    public void Deploy()
     {
-        StartCoroutine(StaggeredDeploy(0.1f));
+        StartCoroutine(StaggeredDeploy(0.05f));
         /*
         for (int i = 0; i < RestingFunnels.Count;)
         {
@@ -121,12 +127,22 @@ public class HexFunnelManager : MonoBehaviour
     {
         foreach (HexFunnel F in Funnels)
         {
-            F.Deploy(TargetTransform);
+            DeployOnNextTarget(F);
             yield return new WaitForSeconds(Delay);
         }
     }
 
-    private void Recall()
+    private void DeployOnNextTarget(HexFunnel F)
+    {
+        F.Deploy(Targets[CurrentTarget].transform);
+        CurrentTarget++;
+
+        if (CurrentTarget == Targets.Count)
+            CurrentTarget = 0;
+    }
+
+
+    public void Recall()
     {
         for (int i = 0; i < ActiveFunnels.Count;)
         {
