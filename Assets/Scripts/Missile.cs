@@ -8,13 +8,13 @@ public class Missile : Bullet
     public GameObject Target;
 
     [SerializeField]
-    private float FlightSpeed = 30;
+    protected float FlightSpeed = 30;
 
     [SerializeField]
-    private float TrackingSpeed =4;
+    protected float TrackingSpeed =4;
 
     [SerializeField]
-    private float ActivationDelay = 0.5f;
+    protected float ActivationDelay = 0.5f;
 
 
 
