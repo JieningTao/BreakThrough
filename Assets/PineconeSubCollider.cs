@@ -23,4 +23,9 @@ public class PineconeSubCollider : MonoBehaviour
     {
         MyPinecone.CheckToAddTarget(other);
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        
+    }
 }
