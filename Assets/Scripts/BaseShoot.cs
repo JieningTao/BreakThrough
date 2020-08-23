@@ -76,13 +76,11 @@ public class BaseShoot : MonoBehaviour
         if (button)
         {
             CurrentlyFiring = true;
-            //StopAllCoroutines();
             StartCoroutine(AutoFire());
         }
         else
         {
             CurrentlyFiring = false;
-            //StopAllCoroutines();
         }
     }
 

@@ -258,8 +258,8 @@ MonoBehaviour:
   Name: {fileID: 1196427550375305313}
   Distance: {fileID: 2096664006737747105}
   MySFType: 0
-  LockOnSizeMin: 10
-  LockOnSizeMax: 40
+  LockOnSizeMin: 5
+  LockOnSizeMax: 30
   DistanceAtLockOnMin: 60
   DistanceAtLockOnMax: 5
 --- !u!1 &4327595659715304419

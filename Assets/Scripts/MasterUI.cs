@@ -21,7 +21,7 @@ public class MasterUI : MonoBehaviour
     void Start()
     {
         MyPlayer = FindObjectOfType<PlayerController>();
-        RingMenuScript = GetComponentInChildren<RingMenu>();
+        RingMenuScript = RingMenu.GetComponent<RingMenu>();
     }
 
     // Update is called once per frame

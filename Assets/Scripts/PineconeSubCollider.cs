@@ -26,6 +26,6 @@ public class PineconeSubCollider : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        
+        MyPinecone.CheckToRemoveTarget(other);   
     }
 }

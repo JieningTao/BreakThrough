@@ -20,6 +20,7 @@ public class EnergySignal : MonoBehaviour
         Default,
         Funnel,
         Missile,
+        Device,
         Unknown,
     }
 

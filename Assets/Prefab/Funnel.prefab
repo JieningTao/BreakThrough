@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3388368909354707543}
   - component: {fileID: 3388368909354707542}
+  - component: {fileID: 2471544506156652900}
+  - component: {fileID: 8300671316337277583}
   m_Layer: 0
   m_Name: Funnel
   m_TagString: Untagged
@@ -54,9 +56,34 @@ MonoBehaviour:
   LaserBulletSpawnLocation: {fileID: 3388368911037344900}
   CurrentState: 1
   WhereToBeAt: {x: 0, y: 0, z: 0}
-  RestPosition: {x: 0, y: 0, z: 0}
-  RestRotation: {x: 0, y: 0, z: 0, w: 0}
-  RestParent: {fileID: 0}
+--- !u!135 &2471544506156652900
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3388368909354707541}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8300671316337277583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3388368909354707541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b71af5e508bd3e46a1608d6348cb7e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TeamSignal: My Faction
+  IdentifierSignal: F-1
+  MySignalType: 1
 --- !u!1 &3388368911037344899
 GameObject:
   m_ObjectHideFlags: 0

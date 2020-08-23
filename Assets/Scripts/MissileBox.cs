@@ -10,8 +10,9 @@ public class MissileBox : MonoBehaviour
     [SerializeField]
     private float TBS;
 
-    [SerializeField]
+    //[SerializeField]
     public List<GameObject> Targets;
+    
 
     [SerializeField]
     private GameObject Missile;
@@ -20,7 +21,7 @@ public class MissileBox : MonoBehaviour
 
 
     private List<Transform> MissileSpawns;
-    public Animator MyAnimator;
+    private Animator MyAnimator;
 
     // Start is called before the first frame update
     void Start()
@@ -45,7 +46,7 @@ public class MissileBox : MonoBehaviour
     private void Fire()
     {
         Targets = GetComponentInParent<PlayerController>().Targets;
-
+        if(Targets.Count>0)
         StartCoroutine(FireAll());
     }
 

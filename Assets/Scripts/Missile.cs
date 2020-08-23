@@ -69,7 +69,7 @@ public class Missile : Bullet
         }
     }
 
-    private void Fly()
+    protected virtual void Fly()
     {
         transform.Translate(Vector3.forward * FlightSpeed * Time.deltaTime);
     }
