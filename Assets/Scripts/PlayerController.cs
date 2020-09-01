@@ -26,12 +26,31 @@ public class PlayerController : MonoBehaviour
     private float VerticalCorrectionDistance = 500;
     [SerializeField]
     private float VerticalCorrectionSpeed = 3;
-    
+
+    [SerializeField]
+    private float JumpForce = 5;
+    [SerializeField]
+    private float FlyBoostForce =2;
 
     [SerializeField]
     private float SecondsTakenToFullSpeed = 1;
     [SerializeField]
     private float moveSpeed = 10;
+    [SerializeField]
+    private float BootMultiplierFactor = 1.2f;
+    [SerializeField]
+    private float BoostJuiceMax;
+    [SerializeField]
+    private float BoostJuice; //public only due to no UI element currently exist
+    [SerializeField]
+    private float BoostJuiceConsumedPerSecond;
+
+    [SerializeField]
+    private LayerMask GroundDetection;
+    [SerializeField]
+    private Transform GroundDetectionsite;
+    [SerializeField]
+    private float GroundDetectionRadius;
 
     [SerializeField]
     public List<GameObject> Targets = new List<GameObject>();
@@ -42,9 +61,10 @@ public class PlayerController : MonoBehaviour
     private PlayerIFF MyEnergySignal;
     public bool InMenu = false;
     private Camera MyCamera;
+    private Rigidbody MyRigidbody;
 
 
-
+    private bool FlyingUp;
 
 
 
@@ -55,6 +75,9 @@ public class PlayerController : MonoBehaviour
         MyCamera = GetComponentInChildren<Camera>();
         Cursor.lockState = CursorLockMode.Locked;
         MyTransform = GetComponent<Transform>();
+        MyRigidbody = GetComponent<Rigidbody>();
+        FlyingUp = false;
+        BoostJuice = BoostJuiceMax;
     }
 
     // Update is called once per frame
@@ -67,9 +90,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    bool grounded()
+    {
 
+        if (Physics.OverlapSphere(GroundDetectionsite.position, GroundDetectionRadius, GroundDetection).Length>0)
+            return true;
+        else
+            return false;
+    }
 
-    
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(GroundDetectionsite.position, GroundDetectionRadius); //show ground detection radius
+    }
+
 
     private void FixedUpdate()
     {
@@ -133,6 +167,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private bool UseBoost(float Amount)
+    {
+        if (BoostJuice < Amount)
+            return false;
+
+        BoostJuice -= Amount;
+        BoostJuice = Mathf.Clamp(BoostJuice, 0, BoostJuiceMax);
+
+        return true;
+    }
 
 
 
@@ -149,9 +193,42 @@ public class PlayerController : MonoBehaviour
                 MoveSpeedCurrentMultiplier = 0;
             }
             MoveSpeedCurrentMultiplier = Mathf.Clamp(MoveSpeedCurrentMultiplier, 0f, 1f);
-            this.GetComponent<Rigidbody>().MovePosition(this.GetComponent<Rigidbody>().position + transform.TransformDirection(moveDirection) * moveSpeed * Time.deltaTime * MoveSpeedCurrentMultiplier);
+
+
+        if (Input.GetButton("Sprint")&&UseBoost(Time.deltaTime*BoostJuiceConsumedPerSecond))
+            MyRigidbody.MovePosition(this.GetComponent<Rigidbody>().position + transform.TransformDirection(moveDirection) * moveSpeed * Time.deltaTime * MoveSpeedCurrentMultiplier * BootMultiplierFactor);
+        else
+            MyRigidbody.MovePosition(this.GetComponent<Rigidbody>().position + transform.TransformDirection(moveDirection) * moveSpeed * Time.deltaTime * MoveSpeedCurrentMultiplier);
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            if (grounded())
+            {
+                MyRigidbody.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+            }
+            else
+            {
+                FlyingUp = true;
+            }
+        }
+
+        if (!Input.GetButton("Jump"))
+            FlyingUp = false;
+            
+        if(FlyingUp&& UseBoost(Time.deltaTime * BoostJuiceConsumedPerSecond))
+            MyRigidbody.AddForce(Vector3.up * FlyBoostForce, ForceMode.Acceleration); //consider switching to forcemode.force to account of mass of player mech
+            
         
     }
+
+
+
+
+
+
+
+
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -205,5 +282,11 @@ public class PlayerController : MonoBehaviour
             return EnergySignal.SignalFactionType.Unknown;
         }
     }
+
+    public float GetBoostJuicePercentage()
+    {
+        return (BoostJuice / BoostJuiceMax);
+    }
+
 
 }
