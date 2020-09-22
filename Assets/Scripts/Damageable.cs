@@ -10,6 +10,7 @@ public class Damageable : MonoBehaviour
 
     public virtual void hit(string DamageType, float DamageValue)
     {
+        //Debug.Log(name+" Took "+DamageValue+" damage.");
         Health -= DamageValue;
         if (Health <= 0)
         {

@@ -11,7 +11,8 @@ public class FCS : MonoBehaviour
     private List<GameObject> LockedMissiles;
 
     [SerializeField]
-    public List<TurretTargetScript> ManagedTurrets;
+    public List<BaseTurret> ManagedTurrets;
+
 
     /*
     public class LockedTarget
@@ -25,36 +26,49 @@ public class FCS : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        LockedTargets = new List<GameObject>();
         
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        //foreach()
+       
     }
 
     public GameObject GetNewTarget()
     {
-        for (int i = 0; i < LockedTargets.Count; i++)
-        {
-            if (LockedTargets[i] != null)
-                return LockedTargets[i];
-            else
-                LockedTargets.Remove(LockedTargets[i]);
-        }
-        return null;
+        if (LockedTargets.Count == 0)
+            return null;
+        ClearNullTargets();
+
+
+        GameObject temp = null;
+        temp = LockedTargets[Random.Range(0,LockedTargets.Count)];
+        //Debug.Log(temp.name + " Given by FCS");
+        return temp;
         
+    }
+
+    private void ClearNullTargets()
+    {
+        foreach (GameObject a in LockedTargets)
+        {
+            if (a == null)
+                LockedTargets.Remove(a);
+
+        }
     }
 
     private void AssignTarget()
     {
-        foreach (TurretTargetScript a in ManagedTurrets)
+        foreach (BaseTurret a in ManagedTurrets)
         {
             if (a.Target == null)
             {
                 a.Target = GetNewTarget();
-                a.MyAIState = TurretTargetScript.TurretAIState.FAW;
+                a.MyAIState = BaseTurret.TurretAIState.FAW;
             }
         }
     }

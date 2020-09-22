@@ -29,7 +29,10 @@ public class UITargetManager : MonoBehaviour
 
     private PlayerIFF playerIFF;
     private bool ShowingDetails;
-    public List<GameObject> Signals = new List<GameObject>();
+    public List<UIFollowTarget> Signals = new List<UIFollowTarget>();
+
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,17 +48,18 @@ public class UITargetManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.CapsLock))
         {
             ShowingDetails = !ShowingDetails;
-            foreach (UIFollowTarget a in GetComponentsInChildren<UIFollowTarget>())
+            foreach (UIFollowTarget a in Signals)
             {
-                a.ShowDetails(ShowingDetails);
+                a.ShowDetail(ShowingDetails);
             }
         }
     }
 
-
+    /*
+     // these code were used back with the old scan for targets playstyle
     public void CreateObjects(List<GameObject> ScannedTargets)
     {
         ClearTargets();
@@ -71,12 +75,13 @@ public class UITargetManager : MonoBehaviour
 
     void ClearTargets()
     {
-        foreach (GameObject T in Signals)
+        foreach (UIFollowTarget T in Signals)
         {
-            Destroy(T);
+            Destroy(T.gameObject);
         }
         Signals.Clear();
     }
+    */
 
     public void AddTarget(GameObject ObjectToAdd)
     {
@@ -85,21 +90,21 @@ public class UITargetManager : MonoBehaviour
 
     private void AddObject(GameObject ObjectToAdd)
     {
-        GameObject NewTargetUI;
+        GameObject NewTargetUIGO;
         switch (ObjectToAdd.GetComponent<EnergySignal>().MySignalType)
         {
             case EnergySignal.SignalObjectType.Default:
-                NewTargetUI = Instantiate(UITargetPrefab, Vector3.zero, transform.rotation);
+                NewTargetUIGO = Instantiate(UITargetPrefab, Vector3.zero, transform.rotation);
                 
                 break;
             case EnergySignal.SignalObjectType.Missile:
-                NewTargetUI = Instantiate(UIMissilePrefab, Vector3.zero, transform.rotation);
+                NewTargetUIGO = Instantiate(UIMissilePrefab, Vector3.zero, transform.rotation);
                 break;
             case EnergySignal.SignalObjectType.Funnel:
-                NewTargetUI = Instantiate(UIFunnelPrefab, Vector3.zero, transform.rotation);
+                NewTargetUIGO = Instantiate(UIFunnelPrefab, Vector3.zero, transform.rotation);
                 break;
             default:
-                NewTargetUI = Instantiate(UITargetPrefab, Vector3.zero, transform.rotation);
+                NewTargetUIGO = Instantiate(UITargetPrefab, Vector3.zero, transform.rotation);
                 break;
         }
         
@@ -107,13 +112,14 @@ public class UITargetManager : MonoBehaviour
 
 
 
-        NewTargetUI.transform.parent = this.transform;
-        UIFollowTarget TUI = NewTargetUI.GetComponent<UIFollowTarget>();
+        NewTargetUIGO.transform.parent = this.transform;
+        UIFollowTarget TUI = NewTargetUIGO.GetComponent<UIFollowTarget>();
+        TUI.RecieveManager(this);
         TUI.AssignedTarget = ObjectToAdd;
         TUI.Player = Player;
-        Signals.Add(NewTargetUI);
+        Signals.Add(TUI);
         TUI.Initialize();
-        AdjustColor(NewTargetUI);
+        AdjustColor(NewTargetUIGO);
     }
 
 

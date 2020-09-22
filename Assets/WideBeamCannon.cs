@@ -2,23 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WideBeamCannon : MonoBehaviour
+public class WideBeamCannon : BaseBeamShoot
 {
 
-    [SerializeField]
-    private GameObject Beam;
-
-    [SerializeField]
-    private float BeamSpeed;
-
-    [SerializeField]
-    private float BeamDamage;
-
-    [SerializeField]
-    private Transform BeamSpawn;
-
-    [SerializeField]
-    private float BeamDestroyTimer = 3;
 
 
 
@@ -33,7 +19,7 @@ public class WideBeamCannon : MonoBehaviour
     {
         BarrelPE = GetComponentInChildren<ParticleSystem>();
         BarrelPE.gameObject.SetActive(false);
-        AttachedBeamScript = null;
+        base.Start();
     }
 
     // Update is called once per frame
@@ -41,39 +27,15 @@ public class WideBeamCannon : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Fire(true);
+            base.Fire(true);
             BarrelPE.gameObject.SetActive(true);
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            Fire(false);
+            base.Fire(false);
             BarrelPE.gameObject.SetActive(false);
         }
 
     }
-
-
-
-    public virtual void Fire(bool button)
-    {
-        if (button)
-        {
-            GameObject NewBeam = Instantiate(Beam, BeamSpawn.position, BeamSpawn.rotation);
-            NewBeam.transform.parent = this.transform;
-            AttachedBeamScript = NewBeam.GetComponent<Beam>();
-            AttachedBeamScript.Setup(BeamDamage,BeamSpeed,BeamDestroyTimer);
-        }
-        else
-        {
-            AttachedBeamScript.Detach();
-            AttachedBeamScript = null;
-        }
-    }
-
-
-
-
-
-
 
 }

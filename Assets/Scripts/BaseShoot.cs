@@ -33,22 +33,26 @@ public class BaseShoot : MonoBehaviour
     protected int ReserveAmmo;
     [SerializeField]
     private float ReloadTime;
+    [SerializeField]
+    private bool HaveMuzzleParticles;
 
     protected bool Reloading;
     protected int CurrentBarrel;
     protected bool CurrentlyFiring;
-    protected List<ParticleSystem> MuzzleFlares;
+    private List<List<ParticleSystem>> MuzzleFlares;
+
     
 
     // Start is called before the first frame update
-    protected void Start()
+    protected virtual void Start()
     {
-        //GetMuzzleFlares();
+        if(HaveMuzzleParticles)
+            GetMuzzleFlares();
         CurrentlyFiring = false;
         CurrentBarrel = 0;
     }
 
-    protected void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         if (ManualControl)
         {
@@ -58,7 +62,10 @@ public class BaseShoot : MonoBehaviour
         }
     }
 
-   
+    public virtual GameObject GetProjectile()
+    {
+        return Projectile;
+    }
 
     protected virtual IEnumerator AutoFire()
     {
@@ -106,7 +113,8 @@ public class BaseShoot : MonoBehaviour
         Transform NewLaserT = NewLaser.GetComponent<Transform>();
         NewLaserT.Rotate(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f)), Random.Range(-SpreadAngle / 2, SpreadAngle / 2));
 
-        //MuzzleFlare(CurrentBarrel);
+        if (HaveMuzzleParticles)
+            MuzzleFlare(CurrentBarrel, 30);
 
         BaseBullet NewLaserScript = NewLaser.GetComponent<BaseBullet>();
         NewLaserScript.Damage = ShotDamage;
@@ -123,6 +131,8 @@ public class BaseShoot : MonoBehaviour
         {
             StartCoroutine(Reload());
         }
+
+
     }
 
     protected void ManualInput()
@@ -139,22 +149,33 @@ public class BaseShoot : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) && Magazine != MaxMagazine)
             StartCoroutine(Reload());
     }
-    /*
-    protected void MuzzleFlare(int MuzzleNumber)
+    
+    protected void MuzzleFlare(int BarrelNum,int ParticleCount)
     {
-        if(MuzzleFlares[MuzzleNumber]!=null)
-        MuzzleFlares[MuzzleNumber].Emit(10);
+        foreach (ParticleSystem a in MuzzleFlares[BarrelNum])
+            if(a!=null)
+            a.Emit(ParticleCount);
     }
 
     protected void GetMuzzleFlares()
     {
-        foreach (Transform I in ProjectileSpawnLocations)
+        MuzzleFlares = new List<List<ParticleSystem>>();
+        Debug.Log("try to get flares");
+        foreach (Transform a in ProjectileSpawnLocations)
         {
-            if(I.gameObject.GetComponent<ParticleSystem>()!=null)
-            MuzzleFlares.Add(I.gameObject.GetComponent<ParticleSystem>());
+            List<ParticleSystem> temp = new List<ParticleSystem>();
+
+            foreach (ParticleSystem b in a.GetComponentsInChildren<ParticleSystem>())
+            {
+                temp.Add(b);
+            }
+
+            MuzzleFlares.Add(temp);
         }
+        Debug.Log(MuzzleFlares.Count + "--" + MuzzleFlares[0].Count);
     }
     
+    /*
     public string AmmoStatus()
     {
         return Magazine + "/" + Reserves;

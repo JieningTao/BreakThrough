@@ -30,20 +30,27 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float JumpForce = 5;
     [SerializeField]
-    private float FlyBoostForce =2;
+    private float FlyBoostForce = 2;
+    [SerializeField]
+    private Vector2 VerticalSpeedCap = new Vector2(-10,10);
 
     [SerializeField]
     private float SecondsTakenToFullSpeed = 1;
     [SerializeField]
     private float moveSpeed = 10;
+    [Tooltip("What times speed the character moves at while boosting")]
     [SerializeField]
     private float BootMultiplierFactor = 1.2f;
     [SerializeField]
     private float BoostJuiceMax;
-    [SerializeField]
-    private float BoostJuice; //public only due to no UI element currently exist
+    private float BoostJuice; 
     [SerializeField]
     private float BoostJuiceConsumedPerSecond;
+
+    [SerializeField]
+    private float BoostJuiceRecoveryPerSecond;
+    [SerializeField]
+    private float BoostJuiceRecoveryDelay;
 
     [SerializeField]
     private LayerMask GroundDetection;
@@ -51,6 +58,8 @@ public class PlayerController : MonoBehaviour
     private Transform GroundDetectionsite;
     [SerializeField]
     private float GroundDetectionRadius;
+    [SerializeField]
+    private GameObject ThrusterParent;
 
     [SerializeField]
     public List<GameObject> Targets = new List<GameObject>();
@@ -62,6 +71,8 @@ public class PlayerController : MonoBehaviour
     public bool InMenu = false;
     private Camera MyCamera;
     private Rigidbody MyRigidbody;
+    private float TimeSinceBoostJuiceConsumed;
+    public List<ParticleSystem> Thrusters;
 
 
     private bool FlyingUp;
@@ -78,6 +89,11 @@ public class PlayerController : MonoBehaviour
         MyRigidbody = GetComponent<Rigidbody>();
         FlyingUp = false;
         BoostJuice = BoostJuiceMax;
+        TimeSinceBoostJuiceConsumed = 0;
+        foreach (ParticleSystem a in ThrusterParent.GetComponentsInChildren<ParticleSystem>())
+        {
+            Thrusters.Add(a);
+        }
     }
 
     // Update is called once per frame
@@ -88,15 +104,28 @@ public class PlayerController : MonoBehaviour
             transform.Rotate((new Vector3(0, Input.GetAxis("Mouse X"), 0)) * Time.deltaTime * Rotationspeed * 10);
             RotateArmsAndCameraVertical();
         }
+
+        CheckToRecoverBoostJuice();
     }
 
     bool grounded()
     {
-
-        if (Physics.OverlapSphere(GroundDetectionsite.position, GroundDetectionRadius, GroundDetection).Length>0)
+        if (Physics.OverlapSphere(GroundDetectionsite.position, GroundDetectionRadius, GroundDetection).Length > 0)
             return true;
         else
             return false;
+    }
+
+    private void CheckToRecoverBoostJuice()
+    {
+        if (TimeSinceBoostJuiceConsumed<BoostJuiceRecoveryDelay)
+            TimeSinceBoostJuiceConsumed += Time.deltaTime;
+        else if(BoostJuice!=BoostJuiceMax)
+        {
+            //start recovering boostJuice
+            BoostJuice += BoostJuiceRecoveryPerSecond*Time.deltaTime;
+            BoostJuice = Mathf.Clamp(BoostJuice, 0, BoostJuiceMax);
+        }
     }
 
     private void OnDrawGizmos()
@@ -131,7 +160,8 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
+    /*
+     // these code were used back with the old scan for targets playstyle
     private void ScanForTargets()
     {
         Targets.Clear();
@@ -146,7 +176,7 @@ public class PlayerController : MonoBehaviour
         }
         TargetUIOverlay.CreateObjects(Targets);
     }
-
+    */
     private void RotateArmsAndCameraVertical()
     {
          Vector3 VerticalRotation = (new Vector3(Input.GetAxis("Mouse Y") * -1, 0, 0)) * Time.deltaTime * Rotationspeed * 10;
@@ -174,7 +204,7 @@ public class PlayerController : MonoBehaviour
 
         BoostJuice -= Amount;
         BoostJuice = Mathf.Clamp(BoostJuice, 0, BoostJuiceMax);
-
+        TimeSinceBoostJuiceConsumed = 0;
         return true;
     }
 
@@ -209,16 +239,40 @@ public class PlayerController : MonoBehaviour
             else
             {
                 FlyingUp = true;
+                ToggleThrusters(true);
             }
         }
 
         if (!Input.GetButton("Jump"))
+        {
             FlyingUp = false;
+            ToggleThrusters(false);
+        }
+            
             
         if(FlyingUp&& UseBoost(Time.deltaTime * BoostJuiceConsumedPerSecond))
             MyRigidbody.AddForce(Vector3.up * FlyBoostForce, ForceMode.Acceleration); //consider switching to forcemode.force to account of mass of player mech
-            
-        
+
+        NormalizeRBV();
+    }
+
+    private void NormalizeRBV()
+    {
+        Vector3 temp = MyRigidbody.velocity;
+
+        temp.y = Mathf.Clamp(MyRigidbody.velocity.y, VerticalSpeedCap.x, VerticalSpeedCap.y);
+        MyRigidbody.velocity = temp;
+    }
+
+
+    private void ToggleThrusters(bool OnOff)
+    {
+        if (OnOff)
+            foreach (ParticleSystem a in Thrusters)
+                a.Play();
+        else
+            foreach (ParticleSystem a in Thrusters)
+                a.Stop();
     }
 
 
@@ -252,6 +306,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
 
     
     public EnergySignal.SignalFactionType FactionCheck(EnergySignal SignalToCheck)
@@ -287,6 +342,8 @@ public class PlayerController : MonoBehaviour
     {
         return (BoostJuice / BoostJuiceMax);
     }
+
+    
 
 
 }

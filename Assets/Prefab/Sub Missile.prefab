@@ -4717,6 +4717,7 @@ ParticleSystemRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -9469,6 +9470,7 @@ ParticleSystemRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -9530,6 +9532,7 @@ TrailRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -9612,6 +9615,7 @@ GameObject:
   - component: {fileID: 6672007395429639972}
   - component: {fileID: 6672007395429639979}
   - component: {fileID: 2660699206626161102}
+  - component: {fileID: -7028491409091503469}
   m_Layer: 0
   m_Name: Sub Missile
   m_TagString: Untagged
@@ -9700,6 +9704,19 @@ MonoBehaviour:
   TeamSignal: My Faction
   IdentifierSignal: M-1
   MySignalType: 2
+--- !u!114 &-7028491409091503469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6672007395429639975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61a4fb287133ee5499efdaf53f34d63a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: 1
 --- !u!1001 &6672007395538934209
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9707,11 +9724,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6672007395429639973}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: a7a6b5883a986d74cbbb59918a4910bf,
-        type: 3}
-      propertyPath: m_Name
-      value: VisualObject
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a7a6b5883a986d74cbbb59918a4910bf,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9811,6 +9823,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: a7a6b5883a986d74cbbb59918a4910bf,
+        type: 3}
+      propertyPath: m_Name
+      value: VisualObject
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7a6b5883a986d74cbbb59918a4910bf, type: 3}

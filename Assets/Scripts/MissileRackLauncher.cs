@@ -63,7 +63,8 @@ public class MissileRackLauncher : MonoBehaviour
 
     private void Shoot()
     {
-        Targets = GetComponentInParent<PlayerController>().Targets;
+        //Targets = GetComponentInParent<PlayerController>().Targets;
+
         GameObject NewMissile = Instantiate(Missile, MissileSpawnLocations[CurrentBarrel].position, MissileSpawnLocations[CurrentBarrel].rotation);
         Missile NewMissileScript = NewMissile.GetComponent<Missile>();
         NewMissileScript.Damage = ShotDamage;

@@ -17,11 +17,12 @@ public class Beam : MonoBehaviour
     public float BeamLength;
 
 
-    private List<Damageable> AllHit = new List<Damageable>();
+   
     private Damageable PrimaryHit;
 
     protected void Start()
     {
+        PrimaryHit = null;
         DetachedFromBarrel = false;
     }
 
@@ -35,19 +36,22 @@ public class Beam : MonoBehaviour
             transform.Translate(Vector3.forward *Speed*Time.deltaTime);
 
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, transform.forward, out hit,  BeamLength,BeamLayerMask))
+            if (Physics.Raycast(transform.position, transform.forward, out hit, BeamLength, BeamLayerMask))
             {
                 //transform.Translate(Vector3.forward * hit.distance);
 
                 BeamLength = hit.distance;
+                PrimaryHit = hit.collider.gameObject.GetComponent<Damageable>();
             }
+            else
+                PrimaryHit = null;
             Debug.DrawRay(transform.position, transform.forward * BeamLength, Color.blue);
 
             Vector3 temp = transform.localScale;
             temp.z = BeamLength;
             transform.localScale = temp;
 
-            PrimaryHit = hit.collider.gameObject.GetComponent<Damageable>();
+           
 
             if (BeamLength <= 0.1)
                 Destroy(this.gameObject);
@@ -61,10 +65,12 @@ public class Beam : MonoBehaviour
                 //transform.Translate(Vector3.forward * hit.distance);
 
                 BeamLength = hit.distance;
+                PrimaryHit = hit.collider.gameObject.GetComponent<Damageable>();
             }
             else
             {
                 BeamLength += Speed * Time.deltaTime;
+                PrimaryHit = null;
                 //transform.Translate(Vector3.forward * Speed * Time.deltaTime);
             }
             Debug.DrawRay(transform.position, transform.forward * BeamLength, Color.blue);
@@ -73,7 +79,7 @@ public class Beam : MonoBehaviour
             temp.z = BeamLength;
             transform.localScale = temp;
 
-            PrimaryHit = hit.collider.gameObject.GetComponent<Damageable>();
+            
         }
 
         DealDamage();
@@ -93,14 +99,17 @@ public class Beam : MonoBehaviour
         this.transform.parent = null;
     }
 
-    protected void DealDamage()
+    protected virtual void DealDamage()
     {
-        PrimaryHit.hit("Energy", DamagePerSec * Time.deltaTime);
 
-        foreach (Damageable a in AllHit)
+        if (PrimaryHit != null)
         {
-            a.hit("Energy", DamagePerSec * Time.deltaTime);
+            //Debug.Log("Attempted to deal damage to" + PrimaryHit.name);
+            PrimaryHit.hit("Energy", DamagePerSec * Time.deltaTime);
         }
+        
+
+        
     }
 
 

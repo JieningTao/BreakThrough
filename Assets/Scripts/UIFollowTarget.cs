@@ -28,8 +28,11 @@ public class UIFollowTarget : MonoBehaviour
     [SerializeField]
     private float DistanceAtLockOnMax = 5;
 
-    private List<UnityEngine.UI.Image> LockOn;
+    [SerializeField]
+    private List<RectTransform> Details = new List<RectTransform>();
 
+    private List<UnityEngine.UI.Image> LockOn;
+    private UITargetManager MyManager;
 
 
 
@@ -48,6 +51,12 @@ public class UIFollowTarget : MonoBehaviour
     {
          get{ return TargetSignal; }
     }
+
+    public void RecieveManager(UITargetManager NewManager)
+    {
+        MyManager = NewManager;
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -73,14 +82,9 @@ public class UIFollowTarget : MonoBehaviour
         }
     }
 
-    public void ShowDetails(bool IfToShow)
-    {
-        Name.gameObject.SetActive(IfToShow);
-        Distance.gameObject.SetActive(IfToShow);
-    }
-
     private void TargetLost()
     {
+        MyManager.Signals.Remove(this);
         this.GetComponent<UnityEngine.UI.Text>().fontSize = 20;
         this.GetComponent<UnityEngine.UI.Text>().text = "< Lost >";
         Name.enabled = false;
@@ -90,6 +94,14 @@ public class UIFollowTarget : MonoBehaviour
 
         foreach (UnityEngine.UI.Image a in LockOn)
             a.gameObject.SetActive(false);
+    }
+
+    public void ShowDetail(bool Show)
+    {
+        foreach (RectTransform a in Details)
+        {
+            a.gameObject.SetActive(Show);
+        }
     }
 
     private void DetermineLockOnSize()

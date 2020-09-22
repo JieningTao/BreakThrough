@@ -4717,6 +4717,7 @@ ParticleSystemRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -9469,6 +9470,7 @@ ParticleSystemRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -9530,6 +9532,7 @@ TrailRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -9689,8 +9692,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.05
-  m_Height: 0.4
+  m_Radius: 0.08
+  m_Height: 0.55
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &6672007395429639979
@@ -9729,11 +9732,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6672007395429639973}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: a7a6b5883a986d74cbbb59918a4910bf,
-        type: 3}
-      propertyPath: m_Name
-      value: VisualObject
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: a7a6b5883a986d74cbbb59918a4910bf,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9833,6 +9831,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: a7a6b5883a986d74cbbb59918a4910bf,
+        type: 3}
+      propertyPath: m_Name
+      value: VisualObject
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7a6b5883a986d74cbbb59918a4910bf, type: 3}
