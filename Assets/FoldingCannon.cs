@@ -42,7 +42,7 @@ public class FoldingCannon : BaseShoot
 
     void MatchVerticalRotation()
     {
-        transform.localRotation = VerticalAimParent.transform.rotation;
+        transform.localRotation = VerticalAimParent.transform.localRotation;
     }
 
     private IEnumerator PrepareToFire()
