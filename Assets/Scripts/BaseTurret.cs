@@ -24,7 +24,7 @@ public class BaseTurret : MonoBehaviour
     protected Vector3 MinMaxRangeAndAngle;
 
     [SerializeField]
-    protected FCS ParentFCS;
+    protected StrongHoldFCS ParentFCS;
 
     protected Quaternion TurretBaseRotation;
     protected Quaternion TurretHeadRotation;

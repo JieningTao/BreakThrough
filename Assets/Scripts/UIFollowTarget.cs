@@ -16,7 +16,7 @@ public class UIFollowTarget : MonoBehaviour
     [SerializeField]
     public EnergySignal.SignalFactionType MySFType;
     private Vector3 TargetPosition;
-    private EnergySignal TargetSignal;
+    
 
     [SerializeField]
     private float LockOnSizeMin = 30;
@@ -33,7 +33,7 @@ public class UIFollowTarget : MonoBehaviour
 
     private List<UnityEngine.UI.Image> LockOn;
     private UITargetManager MyManager;
-
+    private EnergySignal TargetSignal;
 
 
 
@@ -41,7 +41,7 @@ public class UIFollowTarget : MonoBehaviour
     {
         TargetSignal = AssignedTarget.GetComponent<EnergySignal>();
         Name.text = TargetSignal.GetIdentifierSignal;
-        MySFType = Player.GetComponent<PlayerController>().FactionCheck(TargetSignal);
+        MySFType = Player.GetComponent<PlayerFCS>().FactionCheck(TargetSignal);
         LockOn = new List<UnityEngine.UI.Image>();
         foreach (UnityEngine.UI.Image a in GetComponentsInChildren<UnityEngine.UI.Image>())
         LockOn.Add(a);
@@ -61,7 +61,7 @@ public class UIFollowTarget : MonoBehaviour
     void FixedUpdate()
     {
 
-        if (AssignedTarget != null)
+        if (TargetSignal != null && TargetSignal.enabled)
         {
             TargetPosition = AssignedTarget.transform.position;
             Distance.text = (int)Vector3.Distance(Player.transform.position, AssignedTarget.transform.position) + " ";
@@ -69,10 +69,12 @@ public class UIFollowTarget : MonoBehaviour
         }
         else if (TargetSignal.MySignalType == EnergySignal.SignalObjectType.Default)
         {
+            MyManager.playerFCS.AttemptToRemoveEntity(AssignedTarget); //inform player FCS that the target is no longer avaliable
             TargetLost();
         }
         else
         {
+            MyManager.playerFCS.AttemptToRemoveEntity(AssignedTarget);//inform player FCS that the target is no longer avaliable
             Destroy(this.gameObject);
         }
 
@@ -80,9 +82,10 @@ public class UIFollowTarget : MonoBehaviour
         {
             transform.position = Camera.main.WorldToScreenPoint(TargetPosition);
         }
+
     }
 
-    private void TargetLost()
+    public void TargetLost()
     {
         MyManager.Signals.Remove(this);
         this.GetComponent<UnityEngine.UI.Text>().fontSize = 20;

@@ -12,7 +12,7 @@ public class Bullet : MonoBehaviour
     public float Damage;
 
     [SerializeField]
-    protected string DamageType;
+    protected Damageable.DamageType DamageType;
 
 
     // Start is called before the first frame update

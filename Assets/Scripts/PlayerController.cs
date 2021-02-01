@@ -14,13 +14,10 @@ public class PlayerController : MonoBehaviour
     private GameObject RightArm;
     [SerializeField]
     private GameObject LeftArm;
-    [SerializeField]
-    private float ScanRadius;
 
 
 
-    [SerializeField]
-    private UITargetManager TargetUIOverlay;
+
 
     [SerializeField]
     private float VerticalCorrectionDistance = 500;
@@ -34,13 +31,25 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Vector2 VerticalSpeedCap = new Vector2(-10,10);
 
+    [Tooltip("Used to stop faster, closer to 1 means smaller drag, should be bigger than Moving Drag")]
     [SerializeField]
-    private float SecondsTakenToFullSpeed = 1;
+    private float StoppingDrag = 0.93f;
+    [Tooltip("Used to limit top speed,closer to 1 means smaller drag")]
     [SerializeField]
-    private float moveSpeed = 10;
+    private float MovingDrag = 0.98f;
+    [SerializeField]
+    private float moveSpeed = 30;
+    [SerializeField]
+    private bool Boosting; //show in editor to better debug, doesn't need to show
+    [SerializeField]
+    private float DashTapDuration = 0.12f;
+    [SerializeField]
+    private float DashForce = 20;
+    [SerializeField]
+    private float DashCost = 10;
     [Tooltip("What times speed the character moves at while boosting")]
     [SerializeField]
-    private float BootMultiplierFactor = 1.2f;
+    private float BoostMultiplierFactor = 1.2f;
     [SerializeField]
     private float BoostJuiceMax;
     private float BoostJuice; 
@@ -64,28 +73,34 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     public List<GameObject> Targets = new List<GameObject>();
 
-    private Transform MyTransform;
+    [SerializeField]
+    private BaseShoot MyWeapon;
+
     private float MoveSpeedCurrentMultiplier;
+    private Vector3 InputDirection;
     private Vector3 moveDirection;
-    private PlayerIFF MyEnergySignal;
     public bool InMenu = false;
     private Camera MyCamera;
     private Rigidbody MyRigidbody;
     private float TimeSinceBoostJuiceConsumed;
     public List<ParticleSystem> Thrusters;
-
-
+    public float CurrentDrag;
+    private float ShiftHeldFor;
     private bool FlyingUp;
+    private bool WasFiring;
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-        MyEnergySignal = GetComponent<PlayerIFF>();
+        WasFiring = false;
+        CurrentDrag = StoppingDrag;
+        Boosting = false;
+        ShiftHeldFor = 0;
+        
         MyCamera = GetComponentInChildren<Camera>();
         Cursor.lockState = CursorLockMode.Locked;
-        MyTransform = GetComponent<Transform>();
         MyRigidbody = GetComponent<Rigidbody>();
         FlyingUp = false;
         BoostJuice = BoostJuiceMax;
@@ -103,10 +118,27 @@ public class PlayerController : MonoBehaviour
         {
             transform.Rotate((new Vector3(0, Input.GetAxis("Mouse X"), 0)) * Time.deltaTime * Rotationspeed * 10);
             RotateArmsAndCameraVertical();
+            WeaponControl();
         }
 
         CheckToRecoverBoostJuice();
+
+        
     }
+
+    void WeaponControl()
+    {
+        bool temp = Input.GetButton("Fire1");
+        if (temp!=WasFiring)
+        {
+            MyWeapon.Fire(temp);
+        }
+
+
+            WasFiring = temp;
+    }
+
+
 
     bool grounded()
     {
@@ -138,13 +170,7 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
         TargetListCheck();
-        /*
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            Debug.Log("Scanning");
-            ScanForTargets();
-        }
-        */
+        ArtificalDrag();
     }
 
     
@@ -208,27 +234,71 @@ public class PlayerController : MonoBehaviour
         return true;
     }
 
+    private void ArtificalDrag()
+    {
+        //this is used instead of the rigidbody drag as i do not need drag to affect the Y axis
+        Vector3 vel = MyRigidbody.velocity;
 
+        vel.x *= CurrentDrag;
+        vel.z *= CurrentDrag;
+
+        MyRigidbody.velocity = vel;
+    }
 
     private void HandleMovement()
     {
+        InputDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
 
-            moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+        if (InputDirection != Vector3.zero || !grounded())
+            CurrentDrag = MovingDrag;     //needs to factor in flying so drag doesn't affect flying
+        else
+        {
+            CurrentDrag = StoppingDrag;
+        }
+           
+
+        if(!Boosting)
+            MyRigidbody.AddForce(transform.TransformDirection(InputDirection).normalized * moveSpeed, ForceMode.Force);
+        else
+            MyRigidbody.AddForce(transform.TransformDirection(InputDirection).normalized * moveSpeed*BoostMultiplierFactor, ForceMode.Force);
+
+        if (InputDirection != Vector3.zero)
+            CheckBoostAndDash();
+
+        /*
+        moveDirection = transform.TransformDirection(InputDirection);
+
+        
+
+
+
+
             if (moveDirection != Vector3.zero)
             {
                 MoveSpeedCurrentMultiplier += Time.deltaTime / SecondsTakenToFullSpeed;
             }
             else
             {
-                MoveSpeedCurrentMultiplier = 0;
+                moveDirection = MyRigidbody.velocity.normalized;
+                MoveSpeedCurrentMultiplier -= 3*Time.deltaTime / SecondsTakenToFullSpeed;
             }
-            MoveSpeedCurrentMultiplier = Mathf.Clamp(MoveSpeedCurrentMultiplier, 0f, 1f);
+        MoveSpeedCurrentMultiplier = Mathf.Clamp(MoveSpeedCurrentMultiplier, 0f, 1f);
 
+        moveDirection = moveDirection * moveSpeed * MoveSpeedCurrentMultiplier;
+
+        MyRigidbody.velocity = new Vector3(moveDirection.x, MyRigidbody.velocity.y, moveDirection.z);
 
         if (Input.GetButton("Sprint")&&UseBoost(Time.deltaTime*BoostJuiceConsumedPerSecond))
             MyRigidbody.MovePosition(this.GetComponent<Rigidbody>().position + transform.TransformDirection(moveDirection) * moveSpeed * Time.deltaTime * MoveSpeedCurrentMultiplier * BootMultiplierFactor);
         else
             MyRigidbody.MovePosition(this.GetComponent<Rigidbody>().position + transform.TransformDirection(moveDirection) * moveSpeed * Time.deltaTime * MoveSpeedCurrentMultiplier);
+        
+
+        float PercentOfMaxSpeed = Vector2.Distance(Vector2.zero, new Vector2(MyRigidbody.velocity.x, MyRigidbody.velocity.y)) / MaxSpeed;
+        PercentOfMaxSpeed = Mathf.Clamp(PercentOfMaxSpeed, 0f, 1f);
+
+         MyRigidbody.AddForce(this.GetComponent<Rigidbody>().position + transform.TransformDirection(moveDirection) * moveSpeed*(1-PercentOfMaxSpeed) ,ForceMode.Force);
+     */
 
         if (Input.GetButtonDown("Jump"))
         {
@@ -246,6 +316,7 @@ public class PlayerController : MonoBehaviour
         if (!Input.GetButton("Jump"))
         {
             FlyingUp = false;
+            if(Thrusters[0].isPlaying)
             ToggleThrusters(false);
         }
             
@@ -262,6 +333,31 @@ public class PlayerController : MonoBehaviour
 
         temp.y = Mathf.Clamp(MyRigidbody.velocity.y, VerticalSpeedCap.x, VerticalSpeedCap.y);
         MyRigidbody.velocity = temp;
+    }
+
+    private void CheckBoostAndDash()
+    {
+        if (Input.GetButtonUp("Sprint"))
+        {
+            if ( ShiftHeldFor <= DashTapDuration&& UseBoost(DashCost)) //use boost need to check second so if held too long, doesn't check use boost
+            {
+                MyRigidbody.AddForce(transform.TransformDirection(InputDirection).normalized * DashForce, ForceMode.Impulse);
+                Debug.Log("Dash");
+            }
+               
+            ShiftHeldFor = 0;
+            Boosting = false;
+            
+        }
+        else if (Input.GetButton("Sprint"))
+        {
+            ShiftHeldFor += Time.deltaTime;
+            if (ShiftHeldFor > DashTapDuration && UseBoost(BoostJuiceConsumedPerSecond*Time.deltaTime))
+                Boosting = true;
+        }
+
+
+
     }
 
 
@@ -284,16 +380,12 @@ public class PlayerController : MonoBehaviour
 
 
 
-    private void OnTriggerEnter(Collider other)
+
+
+    private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.GetComponent<EnergySignal>()!=null)
-        {
-            TargetUIOverlay.AddTarget(other.gameObject);
-            if (other.gameObject.CompareTag("DamageAbleObject") && MyEnergySignal.GetEnemyFactions.Contains(other.GetComponent<EnergySignal>().GetTeamSignal) )
-            {
-                Targets.Add(other.gameObject);
-            }
-        }
+        if (other.gameObject.GetComponent<EnergySignal>() != null) ;
+
     }
 
     private void CheckTargetsStatus()
@@ -309,34 +401,7 @@ public class PlayerController : MonoBehaviour
 
 
     
-    public EnergySignal.SignalFactionType FactionCheck(EnergySignal SignalToCheck)
-    {
-        if (SignalToCheck.GetTeamSignal == MyEnergySignal.GetTeamSignal)
-        {
-            //Debug.Log("F");
-            return EnergySignal.SignalFactionType.Friendly;
-        }
-        else if (MyEnergySignal.GetAllyFactions.Contains(SignalToCheck.GetTeamSignal))
-        {
-            //Debug.Log("A");
-            return EnergySignal.SignalFactionType.Ally;
-        }
-        else if (MyEnergySignal.GetEnemyFactions.Contains(SignalToCheck.GetTeamSignal))
-        {
-            //Debug.Log("E");
-            return EnergySignal.SignalFactionType.Enemy;
-        }
-        else if (MyEnergySignal.GetNeutralFactions.Contains(SignalToCheck.GetTeamSignal))
-        {
-            //Debug.Log("N");
-            return EnergySignal.SignalFactionType.Neutral;
-        }
-        else
-        {
-            //Debug.Log("U");
-            return EnergySignal.SignalFactionType.Unknown;
-        }
-    }
+    
 
     public float GetBoostJuicePercentage()
     {

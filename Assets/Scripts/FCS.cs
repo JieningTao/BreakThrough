@@ -4,34 +4,76 @@ using UnityEngine;
 
 public class FCS : MonoBehaviour
 {
+
+    
     [SerializeField]
-    private List<GameObject> LockedTargets;
+    protected List<GameObject> LockedEntities; //only serilizd for testing purposes
 
     [SerializeField]
-    private List<GameObject> LockedMissiles;
-
-    [SerializeField]
-    public List<BaseTurret> ManagedTurrets;
+    protected List<GameObject> LockedMissiles; //only serilizd for testing purposes
 
 
-    /*
-    public class LockedTarget
+
+
+
+    protected List<GameObject> LockedTargets;
+
+
+
+
+
+
+
+
+
+
+
+
+    protected virtual void AddNewEntity(EnergySignal TargetES)
     {
-        public GameObject Target;
-        
+        if (!LockedEntities.Contains(TargetES.gameObject))
+        {
+            if (TargetES.MySignalType == EnergySignal.SignalObjectType.Missile)
+            {
+                LockedMissiles.Add(TargetES.gameObject);
+            }
+            else
+            {
+                LockedEntities.Add(TargetES.gameObject);
+            }
+        }
     }
-    */
+
+    protected virtual void AttemptToRemoveEntity(GameObject ObjectToRemove)
+    {
+        if (LockedTargets.Contains(ObjectToRemove))
+        {
+            LockedTargets.Remove(ObjectToRemove);
+            LockedEntities.Remove(ObjectToRemove);
+        }
+        else if (LockedEntities.Contains(ObjectToRemove))
+        {
+            LockedEntities.Remove(ObjectToRemove);
+        }
+        else if (LockedMissiles.Contains(ObjectToRemove))
+        {
+            LockedMissiles.Remove(ObjectToRemove);
+        }
+    }
+
+
 
 
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
+        LockedMissiles = new List<GameObject>();
+        LockedEntities = new List<GameObject>();
         LockedTargets = new List<GameObject>();
-        
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
         //foreach()
        
@@ -41,46 +83,88 @@ public class FCS : MonoBehaviour
     {
         if (LockedTargets.Count == 0)
             return null;
-        ClearNullTargets();
-
-
-        GameObject temp = null;
-        temp = LockedTargets[Random.Range(0,LockedTargets.Count)];
-        //Debug.Log(temp.name + " Given by FCS");
-        return temp;
-        
+        else
+        {
+            while (LockedTargets[0] == null)
+                LockedTargets.RemoveAt(0);
+            return LockedTargets[0];
+        }
     }
 
-    private void ClearNullTargets()
+
+    public List<GameObject> GetNewTargets(int TargetAmount)
     {
+        if (LockedTargets.Count == 0)
+            return null;
+
+        List<GameObject> temp = new List<GameObject>();
+
         foreach (GameObject a in LockedTargets)
         {
             if (a == null)
-                LockedTargets.Remove(a);
-
-        }
-    }
-
-    private void AssignTarget()
-    {
-        foreach (BaseTurret a in ManagedTurrets)
-        {
-            if (a.Target == null)
             {
-                a.Target = GetNewTarget();
-                a.MyAIState = BaseTurret.TurretAIState.FAW;
+                LockedTargets.Remove(a);
+            }
+            else
+            {
+                if (temp.Count == TargetAmount - 1)
+                {
+                    temp.Add(a);
+                    return temp;
+                }
+                else
+                {
+                    temp.Add(a);
+                }
             }
         }
+        return temp;
     }
 
-
-    private void OnTriggerEnter(Collider other)
+    public GameObject GetNewMissileTarget()
     {
-        if (other.GetComponent<EnergySignal>().MySignalType == EnergySignal.SignalObjectType.Missile)
+        if (LockedMissiles.Count == 0)
+            return null;
+        else
         {
-            LockedTargets.Add(other.gameObject);
-            AssignTarget();
+            while (LockedMissiles[0] == null)
+                LockedMissiles.RemoveAt(0);
+            return LockedMissiles[0];
+        }
+    }
+
+    protected void ClearNullEntities()
+    {
+        foreach (GameObject a in LockedEntities)
+        {
+            if (a == null)
+                LockedEntities.Remove(a);
+
+        }
+    }
+
+    
+
+
+    protected virtual void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<EnergySignal>()!=null)
+        {
+            AddNewEntity(other.GetComponent<EnergySignal>());
         }
 
     }
+
+    //player FCS cannot have this as it triggers at the same time as on trigger enter for some reason and also don't respond to colliders turning off
+    /*
+    protected virtual void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponent<EnergySignal>() != null)
+        {
+            Debug.Log(other.gameObject.name + "'s signal faded");
+            AttemptToRemoveEntity(other.gameObject);
+        }
+            
+    }
+    */
 }

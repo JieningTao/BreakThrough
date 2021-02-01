@@ -6,9 +6,29 @@ public class Damageable : MonoBehaviour
 {
     [SerializeField]
     protected float Health;
+    [SerializeField]
+    protected float MaxHealth;
 
 
-    public virtual void hit(string DamageType, float DamageValue)
+
+
+    public enum DamageType
+    {
+        Physical,
+        Energy,
+
+        Explosion,
+
+        Debug,
+
+    }
+
+    protected void Start()
+    {
+        Health = Mathf.Clamp(Health, 0, MaxHealth);
+    }
+
+    public virtual void hit(Damageable.DamageType DT, float DamageValue)
     {
         //Debug.Log(name+" Took "+DamageValue+" damage.");
         Health -= DamageValue;

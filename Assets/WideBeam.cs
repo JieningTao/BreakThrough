@@ -22,7 +22,7 @@ public class WideBeam : Beam
         base.DealDamage();
         foreach (Damageable a in AllHit)
         {
-            a.hit("Energy", DamagePerSec * Time.deltaTime);
+            a.hit(Damageable.DamageType.Energy, DamagePerSec * Time.deltaTime);
         }
     }
 }

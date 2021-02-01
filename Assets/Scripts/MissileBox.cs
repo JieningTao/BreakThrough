@@ -39,12 +39,13 @@ public class MissileBox : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha8))
+        if (Input.GetKeyDown(KeyCode.P))
             Fire();
     }
 
     private void Fire()
     {
+        Debug.Log("MB Fire");
         Targets = GetComponentInParent<PlayerController>().Targets;
         if(Targets.Count>0)
         StartCoroutine(FireAll());

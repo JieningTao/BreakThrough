@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3704963524026239062}
   - component: {fileID: 3704963524026239057}
   - component: {fileID: 8934741863115123291}
+  - component: {fileID: 3268437460065479538}
   m_Layer: 0
   m_Name: Hex Funnel
   m_TagString: Untagged
@@ -59,7 +60,9 @@ MonoBehaviour:
   ManagedBy: {fileID: 0}
   MaxSafetyDistanceToTarget: 10
   MinSafetyDistanceToTarget: 8
+  FireRandomInterval: {x: 2, y: 4}
   CurrentState: 1
+  FireCoolDown: 0
 --- !u!114 &8934741863115123291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,6 +89,22 @@ MonoBehaviour:
   Magazine: 2
   ReserveAmmo: 20
   ReloadTime: 0.1
+  HaveMuzzleParticles: 0
+--- !u!114 &3268437460065479538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3704963524026239063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b71af5e508bd3e46a1608d6348cb7e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TeamSignal: My Faction
+  IdentifierSignal: HF-1
+  MySignalType: 1
 --- !u!1 &3704963524526356700
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,6 +173,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -250,6 +270,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -327,6 +348,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

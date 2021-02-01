@@ -17,7 +17,7 @@ TagManager:
   - PostProcessing
   - Beams
   - Terrain
-  - 
+  - Shield
   - 
   - 
   - 
@@ -41,4 +41,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: A
+    uniqueID: 2777476929
     locked: 0

@@ -38,7 +38,7 @@ public class BaseBullet : Bullet
         if (Physics.Raycast(transform.position, transform.forward, out hit, Speed * Time.deltaTime))
         {
             transform.Translate(Vector3.forward * hit.distance);
-            DealDamageTo(hit.transform.gameObject);
+            DealDamageTo(hit.collider.gameObject);
         }
         else
         {
@@ -48,8 +48,12 @@ public class BaseBullet : Bullet
 
     protected virtual void DealDamageTo(GameObject Target)
     {
-        if(Target.GetComponent<Damageable>()!=null)
-        Target.GetComponent<Damageable>().hit(DamageType, Damage);
+        Damageable Temp = Target.GetComponent<Damageable>();
+        if (Temp != null)
+        {
+            Temp.hit(DamageType, Damage);
+            Debug.Log(Target.name+" Was hit by "+gameObject.name);
+        }
         Destroy(this.gameObject);
     }
 }

@@ -65,7 +65,7 @@ SphereCollider:
   m_GameObject: {fileID: 3388368909354707541}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
@@ -121,11 +121,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3388368909354707543}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: 821566f002275274b8a2449826e73520,
-        type: 3}
-      propertyPath: m_Name
-      value: Funnel Type-1
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 821566f002275274b8a2449826e73520,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -195,6 +190,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.07769292
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 821566f002275274b8a2449826e73520,
+        type: 3}
+      propertyPath: m_Name
+      value: Funnel Type-1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 821566f002275274b8a2449826e73520, type: 3}

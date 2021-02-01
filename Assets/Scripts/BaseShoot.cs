@@ -19,6 +19,7 @@ public class BaseShoot : MonoBehaviour
     [SerializeField]
     protected float ShotDamage;
 
+    [Tooltip("Take manual control of this weapon, left click to fire, R to reload \n This is not the way weapons are intended to be controlled, used in testing ONLY \n NOTE: is buggy, may not read fire/stop fire")]
     [SerializeField]
     private bool ManualControl;
 
@@ -57,9 +58,9 @@ public class BaseShoot : MonoBehaviour
         if (ManualControl)
         {
             ManualInput();
-            if(Ammo!=null)
-            UpdateUI();
         }
+        if (Ammo != null)
+            UpdateUI();
     }
 
     public virtual GameObject GetProjectile()
@@ -74,7 +75,7 @@ public class BaseShoot : MonoBehaviour
             Shoot();
             yield return new WaitForSeconds(TimeBetweenShot);
         }
-        Debug.Log("Fire Cycle Ended");
+        //Debug.Log("Fire Cycle Ended");
         yield return null;
     }
 

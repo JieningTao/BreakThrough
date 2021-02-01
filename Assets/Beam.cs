@@ -105,7 +105,7 @@ public class Beam : MonoBehaviour
         if (PrimaryHit != null)
         {
             //Debug.Log("Attempted to deal damage to" + PrimaryHit.name);
-            PrimaryHit.hit("Energy", DamagePerSec * Time.deltaTime);
+            PrimaryHit.hit(Damageable.DamageType.Energy, DamagePerSec * Time.deltaTime);
         }
         
 

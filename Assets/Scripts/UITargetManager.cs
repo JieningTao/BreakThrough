@@ -28,6 +28,7 @@ public class UITargetManager : MonoBehaviour
     private Color UnknownColor;
 
     private PlayerIFF playerIFF;
+    public PlayerFCS playerFCS;
     private bool ShowingDetails;
     public List<UIFollowTarget> Signals = new List<UIFollowTarget>();
 
@@ -36,6 +37,7 @@ public class UITargetManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerFCS = Player.GetComponent<PlayerFCS>();
         playerIFF = Player.GetComponent<PlayerIFF>();
         ShowingDetails = true;
     }
