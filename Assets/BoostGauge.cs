@@ -17,7 +17,10 @@ public class BoostGauge : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (Player == null)
+        {
+            Player = FindObjectOfType<PlayerController>();
+        }
     }
 
     // Update is called once per frame

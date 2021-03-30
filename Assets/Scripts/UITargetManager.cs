@@ -27,6 +27,9 @@ public class UITargetManager : MonoBehaviour
     [SerializeField]
     private Color UnknownColor;
 
+    [SerializeField]
+    private IndicatorBall MyIB;
+
     private PlayerIFF playerIFF;
     public PlayerFCS playerFCS;
     private bool ShowingDetails;
@@ -92,12 +95,14 @@ public class UITargetManager : MonoBehaviour
 
     private void AddObject(GameObject ObjectToAdd)
     {
+        bool IsDefault = false;
         GameObject NewTargetUIGO;
+
         switch (ObjectToAdd.GetComponent<EnergySignal>().MySignalType)
         {
             case EnergySignal.SignalObjectType.Default:
                 NewTargetUIGO = Instantiate(UITargetPrefab, Vector3.zero, transform.rotation);
-                
+                IsDefault = true;
                 break;
             case EnergySignal.SignalObjectType.Missile:
                 NewTargetUIGO = Instantiate(UIMissilePrefab, Vector3.zero, transform.rotation);
@@ -116,12 +121,16 @@ public class UITargetManager : MonoBehaviour
 
         NewTargetUIGO.transform.parent = this.transform;
         UIFollowTarget TUI = NewTargetUIGO.GetComponent<UIFollowTarget>();
+
         TUI.RecieveManager(this);
         TUI.AssignedTarget = ObjectToAdd;
         TUI.Player = Player;
         Signals.Add(TUI);
         TUI.Initialize();
         AdjustColor(NewTargetUIGO);
+        if (IsDefault)
+            TUI.MyTC = MyIB.CreateTargetCone(ObjectToAdd);
+            
     }
 
 

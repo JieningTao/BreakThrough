@@ -34,6 +34,7 @@ public class UIFollowTarget : MonoBehaviour
     private List<UnityEngine.UI.Image> LockOn;
     private UITargetManager MyManager;
     private EnergySignal TargetSignal;
+    public GameObject MyTC;
 
 
 
@@ -97,6 +98,7 @@ public class UIFollowTarget : MonoBehaviour
 
         foreach (UnityEngine.UI.Image a in LockOn)
             a.gameObject.SetActive(false);
+        Destroy(MyTC, 0);
     }
 
     public void ShowDetail(bool Show)

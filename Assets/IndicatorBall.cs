@@ -6,15 +6,16 @@ public class IndicatorBall : MonoBehaviour
 {
     //3D stuff in this canvas needs shader mode set to GUI to not clip into world
 
-    GameObject Player;
     [SerializeField]
-    GameObject TestGO;
+    private GameObject TargetConePrefab;
     [SerializeField]
-    GameObject TestTarget;
+    private GameObject TargetConeParent;
+
+    public List<TargetCone> TargetCones = new List<TargetCone>();
     // Start is called before the first frame update
     void Start()
     {
-        Player = FindObjectOfType<PlayerController>().gameObject;
+
     }
 
     // Update is called once per frame
@@ -23,11 +24,18 @@ public class IndicatorBall : MonoBehaviour
         transform.rotation = Quaternion.Euler(0,0,0);
 
 
-        PointArrow(TestGO, Vector3.Normalize(TestTarget.transform.position - Player.transform.position));
+
     }
 
-    void PointArrow(GameObject Arrow, Vector3 PointDirection)
+    public GameObject CreateTargetCone(GameObject TargetToPointAt)
     {
-        Arrow.transform.LookAt(TestTarget.transform,Vector3.up);
+        GameObject NewTargetCone;
+        NewTargetCone = Instantiate(TargetConePrefab, TargetConeParent.transform.position, TargetConeParent.transform.rotation);
+        NewTargetCone.transform.parent = TargetConeParent.transform;
+        TargetCone NTCScript = NewTargetCone.GetComponent<TargetCone>();
+        NTCScript.InitialCheck(TargetToPointAt.transform);
+
+        return NewTargetCone;
     }
+
 }
